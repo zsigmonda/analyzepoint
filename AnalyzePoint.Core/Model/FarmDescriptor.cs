@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.SharePoint.Administration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,14 +24,19 @@ namespace AnalyzePoint.Core.Model
     /// </summary>
     public List<WebApplicationDescriptor> WebApplications { get; protected set; }
 
-    public FarmDescriptor(Guid identifier) : base(identifier)
+    public List<ServerDescriptor> Servers { get; protected set; }
+
+    public List<ServiceDescriptor> Services { get; protected set; }
+
+    public FarmDescriptor(SPFarm farm) : base(farm)
     {
+      this.IsDeployed = true;
+
       this.Solutions = new List<SolutionDescriptor>();
       this.Features = new List<FeatureDescriptor>();
       this.WebApplications = new List<WebApplicationDescriptor>();
-
+      this.Servers = new List<ServerDescriptor>();
+      this.Services = new List<ServiceDescriptor>();
     }
-
-
   }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.SharePoint.Administration;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,8 +23,11 @@ namespace AnalyzePoint.Core.Model
     /// This list contains all the farm solutions that are deployed for this web application (including globally deployed farm solutions).
     /// </summary>
     public List<SolutionDescriptor> DeployedSolutions { get; protected set; }
-    public WebApplicationDescriptor(Guid identifier) : base(identifier)
+
+    public WebApplicationDescriptor(SPWebApplication webApplication) : base(webApplication)
     {
+      IsDeployed = true;
+
       this.SiteCollections = new List<SiteCollectionDescriptor>();
       this.Features = new List<FeatureDescriptor>();
       this.DeployedSolutions = new List<SolutionDescriptor>();

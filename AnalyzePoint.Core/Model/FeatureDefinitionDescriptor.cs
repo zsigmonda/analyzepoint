@@ -1,4 +1,5 @@
 ﻿using AnalyzePoint.Core.Common;
+using Microsoft.SharePoint.Administration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,10 @@ namespace AnalyzePoint.Core.Model
     public FeatureScope Scope { get; set; }
 
     public SolutionDescriptor ContainingSolution { get; set; }
-    public FeatureDefinitionDescriptor(Guid identifier) : base(identifier)
+
+    public bool IsBuiltIn { get; set; }
+
+    public FeatureDefinitionDescriptor(SPFeatureDefinition featureDefinition) : base(featureDefinition)
     {
       ;
     }

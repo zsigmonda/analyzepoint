@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.SharePoint;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,13 @@ namespace AnalyzePoint.Core.Model
     /// This list contains all the features available for this site collection.
     /// </summary>
     public List<FeatureDescriptor> Features { get; protected set; }
-    public SiteCollectionDescriptor(Guid identifier) : base(identifier)
+
+    public SiteCollectionDescriptor(SPSite siteCollection) : base()
     {
+      Identifier = siteCollection.ID;
+      DisplayName = siteCollection.Url;
+      Name = siteCollection.Url;
+
       this.Features = new List<FeatureDescriptor>();
     }
   }

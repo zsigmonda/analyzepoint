@@ -47,13 +47,23 @@
     </Compile>
     <Compile Include="Collector\BaseComponentCollector.cs" />
     <Compile Include="Common\Enums.cs" />
+    <Compile Include="Factory\DescriptorFactory.cs" />
+    <Compile Include="Factory\SharePointServerDescriptorFactory.cs" />
+    <Compile Include="Factory\SolutionPackageDescriptorFactory.cs" />
     <Compile Include="Model\BaseDescriptor.cs" />
     <Compile Include="Model\FarmDescriptor.cs" />
     <Compile Include="Model\FeatureDefinitionDescriptor.cs" />
     <Compile Include="Model\FeatureDescriptor.cs" />
+    <Compile Include="Model\ListDescriptor.cs" />
+    <Compile Include="Model\SiteContentDescriptor.cs" />
+    <Compile Include="Model\ServerDescriptor.cs" />
+    <Compile Include="Model\ServiceDescriptor.cs" />
+    <Compile Include="Model\ServiceInstanceDescriptor.cs" />
     <Compile Include="Model\SiteCollectionDescriptor.cs" />
+    <Compile Include="Model\SiteDescriptor.cs" />
     <Compile Include="Model\SolutionDescriptor.cs" />
     <Compile Include="Model\WebApplicationDescriptor.cs" />
+    <Compile Include="Model\WebServiceDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

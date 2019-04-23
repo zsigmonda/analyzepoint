@@ -19,10 +19,10 @@ namespace AnalyzePoint.Core.Model
     /// </summary>
     public List<WebApplicationDescriptor> DeployedTo { get; protected set; }
 
-    public bool IsGloballyDeployed { get; set; } 
-
-    public SolutionDescriptor(Guid identifier) : base(identifier)
+    public SolutionDescriptor(SPSolution solution) : base(solution)
     {
+      IsDeployed = solution.DeploymentState != SPSolutionDeploymentState.NotDeployed;
+
       this.Features = new List<FeatureDefinitionDescriptor>();
       this.DeployedTo = new List<WebApplicationDescriptor>();
     }

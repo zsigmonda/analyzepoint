@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AnalyzePoint.Core.Common;
+using Microsoft.SharePoint;
 
 namespace AnalyzePoint.Core.Model
 {
@@ -13,11 +14,9 @@ namespace AnalyzePoint.Core.Model
 
     public bool Activated { get; set; }
 
-    public FeatureDescriptor(FeatureDefinitionDescriptor featureDefinition) : base(featureDefinition.Identifier)
+    public FeatureDescriptor(SPFeature feature)
     {
-      DisplayName = featureDefinition.DisplayName;
-      Name = featureDefinition.Name;
-      Definition = featureDefinition;
+      ;
     }
   }
 }
