@@ -1,5 +1,4 @@
-﻿using Microsoft.SharePoint.Administration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public class FarmDescriptor : BaseDescriptor
+  public class FarmDescriptor : Descriptor
   {
     /// <summary>
     /// This list contains all the farm solutions that are installed on this farm. This list contains both deployed and retracted/not yet deployed solutions.
@@ -28,7 +27,7 @@ namespace AnalyzePoint.Core.Model
 
     public List<ServiceDescriptor> Services { get; protected set; }
 
-    public FarmDescriptor(SPFarm farm) : base(farm)
+    public FarmDescriptor()
     {
       this.IsDeployed = true;
 

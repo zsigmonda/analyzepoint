@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnalyzePoint.Core.Factory
+namespace AnalyzePoint.Core.Model
 {
-  public class SharePointServerDescriptorFactory : DescriptorFactory
+  interface IWrapper<T>
   {
+    T WrappedObject { get; set; }
   }
 }

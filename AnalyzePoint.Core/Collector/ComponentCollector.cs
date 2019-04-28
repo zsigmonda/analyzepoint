@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnalyzePoint.Core.Model;
 
-namespace AnalyzePoint.Core.Factory
+namespace AnalyzePoint.Core.Collector
 {
-  public abstract class DescriptorFactory
+  public abstract class ComponentCollector
   {
-
+    
   }
 }

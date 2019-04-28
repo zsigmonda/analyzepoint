@@ -1,5 +1,4 @@
-﻿using Microsoft.SharePoint;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,12 +10,8 @@ namespace AnalyzePoint.Core.Model
   {
     public List<SiteContentDescriptor> Contents { get; protected set; }
 
-    public SiteDescriptor(SPWeb site)
+    public SiteDescriptor() : base()
     {
-      Identifier = site.ID;
-      Name = site.Name;
-      DisplayName = site.Title;
-
       Contents = new List<SiteContentDescriptor>();
     }
 

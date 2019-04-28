@@ -4,13 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A7F7580F-F23A-498D-9184-25887A3BC173}</ProjectGuid>
+    <ProjectGuid>{CAB0409C-A93F-423A-8A3E-603679DCBF11}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AnalyzePoint.Core</RootNamespace>
-    <AssemblyName>AnalyzePoint.Core</AssemblyName>
+    <RootNamespace>AnalyzePoint.SharePointServer</RootNamespace>
+    <AssemblyName>AnalyzePoint.SharePointServer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,12 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL" />
     <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard2.0\System.Collections.Immutable.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,34 +42,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\SharedAssemblyInfo.cs">
-      <Link>Properties\SharedAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="Collector\ArtifactCollector.cs" />
-    <Compile Include="Collector\ComponentCollector.cs" />
-    <Compile Include="Collector\IComponentCollector.cs" />
-    <Compile Include="Common\Enums.cs" />
-    <Compile Include="Factory\ICollectorFactory.cs" />
-    <Compile Include="Model\Descriptor.cs" />
-    <Compile Include="Model\FarmDescriptor.cs" />
-    <Compile Include="Model\FeatureDefinitionDescriptor.cs" />
-    <Compile Include="Model\FeatureDescriptor.cs" />
-    <Compile Include="Model\IWrapper.cs" />
-    <Compile Include="Model\ListDescriptor.cs" />
-    <Compile Include="Model\SiteContentDescriptor.cs" />
-    <Compile Include="Model\ServerDescriptor.cs" />
-    <Compile Include="Model\ServiceDescriptor.cs" />
-    <Compile Include="Model\ServiceInstanceDescriptor.cs" />
-    <Compile Include="Model\SiteCollectionDescriptor.cs" />
-    <Compile Include="Model\SiteDescriptor.cs" />
-    <Compile Include="Model\SolutionDescriptor.cs" />
-    <Compile Include="Model\WebApplicationDescriptor.cs" />
-    <Compile Include="Model\WebServiceDescriptor.cs" />
+    <Compile Include="Collector\CollectorFactory.cs" />
+    <Compile Include="Collector\SPListCollector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tree\TreeNode.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\AnalyzePoint.Core\AnalyzePoint.Core.csproj">
+      <Project>{a7f7580f-f23a-498d-9184-25887a3bc173}</Project>
+      <Name>AnalyzePoint.Core</Name>
+    </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

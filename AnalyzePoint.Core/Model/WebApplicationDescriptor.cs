@@ -1,5 +1,4 @@
-﻿using Microsoft.SharePoint.Administration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public class WebApplicationDescriptor : BaseDescriptor
+  public class WebApplicationDescriptor : Descriptor
   {
     /// <summary>
     /// This list contains all the Site Collections that belong to this web application
@@ -24,7 +23,7 @@ namespace AnalyzePoint.Core.Model
     /// </summary>
     public List<SolutionDescriptor> DeployedSolutions { get; protected set; }
 
-    public WebApplicationDescriptor(SPWebApplication webApplication) : base(webApplication)
+    public WebApplicationDescriptor()
     {
       IsDeployed = true;
 

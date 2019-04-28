@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public abstract class SiteContentDescriptor : BaseDescriptor
+  public abstract class SiteContentDescriptor : Descriptor
   {
     public SiteContentDescriptor ContainingSite { get; set; }
   }

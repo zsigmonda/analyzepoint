@@ -1,5 +1,4 @@
-﻿using Microsoft.SharePoint.Administration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public class SolutionDescriptor : BaseDescriptor
+  public class SolutionDescriptor : Descriptor
   {
     /// <summary>
     /// This list contains all the feature definitions that are embedded into this farm solution.
@@ -19,10 +18,8 @@ namespace AnalyzePoint.Core.Model
     /// </summary>
     public List<WebApplicationDescriptor> DeployedTo { get; protected set; }
 
-    public SolutionDescriptor(SPSolution solution) : base(solution)
+    public SolutionDescriptor() : base()
     {
-      IsDeployed = solution.DeploymentState != SPSolutionDeploymentState.NotDeployed;
-
       this.Features = new List<FeatureDefinitionDescriptor>();
       this.DeployedTo = new List<WebApplicationDescriptor>();
     }

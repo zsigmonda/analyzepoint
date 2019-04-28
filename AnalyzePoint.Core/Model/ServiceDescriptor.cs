@@ -1,5 +1,4 @@
-﻿using Microsoft.SharePoint.Administration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public class ServiceDescriptor : BaseDescriptor
+  public class ServiceDescriptor : Descriptor
   {
     public List<ServiceInstanceDescriptor> Instances { get; protected set; }
 
-    public ServiceDescriptor(SPService service) : base(service)
+    public ServiceDescriptor()
     {
       IsDeployed = true;
 
