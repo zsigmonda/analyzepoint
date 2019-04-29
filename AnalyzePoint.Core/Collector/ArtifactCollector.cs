@@ -1,4 +1,5 @@
 ﻿using AnalyzePoint.Core.Factory;
+using AnalyzePoint.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace AnalyzePoint.Core.Collector
       CollectorFactory = collectorFactory;
     }
 
-    public ComponentCollector ForArtifact<T>()
+    public ComponentCollector CollectorFor<T>() where T : Descriptor, new()
     {
       return CollectorFactory.CreateCollectorFor<T>();
     }

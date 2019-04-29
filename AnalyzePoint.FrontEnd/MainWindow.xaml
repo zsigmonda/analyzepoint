@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnalyzePoint.FrontEnd"
         mc:Ignorable="d"
-        Title="AnalyzePoint" Height="450" Width="800" WindowStartupLocation="CenterScreen">
+        Title="AnalyzePoint" Height="450" Width="800" WindowStartupLocation="CenterScreen" Icon="AppIcon.ico">
     <Grid>
         
     </Grid>

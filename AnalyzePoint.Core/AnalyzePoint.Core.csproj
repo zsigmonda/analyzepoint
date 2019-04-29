@@ -49,7 +49,6 @@
     </Compile>
     <Compile Include="Collector\ArtifactCollector.cs" />
     <Compile Include="Collector\ComponentCollector.cs" />
-    <Compile Include="Collector\IComponentCollector.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Factory\ICollectorFactory.cs" />
     <Compile Include="Model\Descriptor.cs" />
