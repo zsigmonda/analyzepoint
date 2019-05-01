@@ -50,6 +50,8 @@
     <Compile Include="Collector\CollectorFactory.cs" />
     <Compile Include="Collector\SPFarmCollector.cs" />
     <Compile Include="Collector\SPListCollector.cs" />
+    <Compile Include="Collector\SPSiteCollectionCollector.cs" />
+    <Compile Include="Collector\SPSolutionCollector.cs" />
     <Compile Include="Collector\SPWebCollector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
