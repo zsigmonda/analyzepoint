@@ -8,7 +8,7 @@ namespace AnalyzePoint.Core.Model
 {
   public class WebServiceDescriptor : ServiceDescriptor
   {
-    public WebServiceDescriptor()
+    public WebServiceDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
       ;
     }

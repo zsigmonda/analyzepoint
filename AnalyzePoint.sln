@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalyzePoint.SharePointServer", "AnalyzePoint.SharePointServer\AnalyzePoint.SharePointServer.csproj", "{CAB0409C-A93F-423A-8A3E-603679DCBF11}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AnalyzePoint.TestHarness", "AnalyzePoint.TestHarness\AnalyzePoint.TestHarness.csproj", "{3BB596D4-2CDD-4956-AC08-BA852D660170}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{CAB0409C-A93F-423A-8A3E-603679DCBF11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAB0409C-A93F-423A-8A3E-603679DCBF11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAB0409C-A93F-423A-8A3E-603679DCBF11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BB596D4-2CDD-4956-AC08-BA852D660170}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BB596D4-2CDD-4956-AC08-BA852D660170}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BB596D4-2CDD-4956-AC08-BA852D660170}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BB596D4-2CDD-4956-AC08-BA852D660170}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

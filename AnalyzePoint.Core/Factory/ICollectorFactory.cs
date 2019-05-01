@@ -10,6 +10,6 @@ namespace AnalyzePoint.Core.Factory
 {
   public interface ICollectorFactory
   {
-    ComponentCollector CreateCollectorFor<T>() where T : Descriptor, new();
+    ComponentCollector CreateCollectorFor<T>() where T : Descriptor;
   }
 }

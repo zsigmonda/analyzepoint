@@ -10,7 +10,7 @@ namespace AnalyzePoint.Core.Model
   {
     public List<ServiceInstanceDescriptor> ServiceInstances { get; protected set; }
 
-    public ServerDescriptor()
+    public ServerDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
       IsDeployed = true;
 

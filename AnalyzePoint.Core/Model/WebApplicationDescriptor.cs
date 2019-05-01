@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public class WebApplicationDescriptor : Descriptor
+  public class WebApplicationDescriptor : Descriptor, IFeatureTarget
   {
     /// <summary>
-    /// This list contains all the Site Collections that belong to this web application
+    /// This list contains all the Site Collections that belong to this web application.
     /// </summary>
     public List<SiteCollectionDescriptor> SiteCollections { get; protected set; }
 
     /// <summary>
-    /// This list contains all the features available for this web application
+    /// This list contains all the features activated on this web application.
     /// </summary>
     public List<FeatureDescriptor> Features { get; protected set; }
 
@@ -23,7 +23,7 @@ namespace AnalyzePoint.Core.Model
     /// </summary>
     public List<SolutionDescriptor> DeployedSolutions { get; protected set; }
 
-    public WebApplicationDescriptor()
+    public WebApplicationDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
       IsDeployed = true;
 

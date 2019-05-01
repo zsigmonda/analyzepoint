@@ -14,5 +14,12 @@ namespace AnalyzePoint.Core.Model
     public SolutionDescriptor ContainingSolution { get; set; }
 
     public bool IsBuiltIn { get; set; }
+
+    public int CompatibilityLevel { get; set; }
+
+    public FeatureDefinitionDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
+    {
+
+    }
   }
 }

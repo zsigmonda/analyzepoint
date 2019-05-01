@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public class ListDescriptor : SiteContentDescriptor
+  interface IFeatureTarget
   {
-    public ListDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
-    {
-
-    }
+    List<FeatureDescriptor> Features { get; }
   }
 }

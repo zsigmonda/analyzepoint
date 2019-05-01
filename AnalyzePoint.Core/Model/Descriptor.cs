@@ -23,11 +23,6 @@ namespace AnalyzePoint.Core.Model
       DisplayName = displayName;
     }
 
-    public Descriptor()
-    {
-
-    }
-
     public override bool Equals(object obj)
     {
       if (obj == null)

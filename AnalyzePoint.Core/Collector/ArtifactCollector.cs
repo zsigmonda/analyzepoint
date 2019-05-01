@@ -17,7 +17,7 @@ namespace AnalyzePoint.Core.Collector
       CollectorFactory = collectorFactory;
     }
 
-    public ComponentCollector CollectorFor<T>() where T : Descriptor, new()
+    public ComponentCollector CollectorFor<T>() where T : Descriptor
     {
       return CollectorFactory.CreateCollectorFor<T>();
     }

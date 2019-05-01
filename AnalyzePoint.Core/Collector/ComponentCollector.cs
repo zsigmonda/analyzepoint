@@ -9,20 +9,22 @@ namespace AnalyzePoint.Core.Collector
 {
   public abstract class ComponentCollector
   {
-    private int RecursionDepthLimit;
-    private bool IsRecursionEnabled;
-    private readonly List<ComponentCollector> SuccessiveCollectors;
+    public int RecursionDepthLimit { get; protected set; }
+    public bool IsRecursionEnabled { get; protected set; }
+    protected List<ComponentCollector> SubsequentCollectors;
 
-    public abstract IEnumerable<Descriptor> CollectAll();
+    public abstract Descriptor Process();
+    public abstract Descriptor Process(object componentToProcess);
+    public abstract ComponentCollector ForComponent(object componentToProcess);
 
     public ComponentCollector()
     {
-      SuccessiveCollectors = new List<ComponentCollector>();
+      SubsequentCollectors = new List<ComponentCollector>();
     }
 
-    public virtual ComponentCollector WithSuccessiveCollector(ComponentCollector successiveCollector)
+    public virtual ComponentCollector WithSubsequentCollector(ComponentCollector subsequentCollector)
     {
-      SuccessiveCollectors.Add(successiveCollector);
+      SubsequentCollectors.Add(subsequentCollector);
 
       return this;
     }

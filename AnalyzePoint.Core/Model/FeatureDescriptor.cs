@@ -11,6 +11,9 @@ namespace AnalyzePoint.Core.Model
   {
     public FeatureDefinitionDescriptor Definition { get; protected set; }
 
-    public bool Activated { get; set; }
+    public FeatureDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
+    {
+
+    }
   }
 }

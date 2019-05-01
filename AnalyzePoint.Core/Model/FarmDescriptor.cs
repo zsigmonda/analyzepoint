@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public class FarmDescriptor : Descriptor
+  public class FarmDescriptor : Descriptor, IFeatureTarget
   {
     /// <summary>
     /// This list contains all the farm solutions that are installed on this farm. This list contains both deployed and retracted/not yet deployed solutions.
@@ -19,6 +19,11 @@ namespace AnalyzePoint.Core.Model
     public List<FeatureDescriptor> Features { get; protected set; }
 
     /// <summary>
+    /// This list contains all the feature definitions registeres within the farm.
+    /// </summary>
+    public List<FeatureDescriptor> FeatureDefinitions { get; protected set; }
+
+    /// <summary>
     /// This list contains all the web applications hosted within the farm, including the Central Administration portal.
     /// </summary>
     public List<WebApplicationDescriptor> WebApplications { get; protected set; }
@@ -27,7 +32,9 @@ namespace AnalyzePoint.Core.Model
 
     public List<ServiceDescriptor> Services { get; protected set; }
 
-    public FarmDescriptor()
+    public Version BuildVersion { get; set; }
+
+    public FarmDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
       this.IsDeployed = true;
 
