@@ -12,44 +12,102 @@ namespace AnalyzePoint.SharePointServer.Collector
 {
   public class SPFarmCollector : ComponentCollector
   {
-    private SPFarm ArtifactToCollect;
+    private SPFarm ComponentToProcess;
 
-    public SPFarm ComponentToProcess => throw new NotImplementedException();
+    private SPSolutionCollector SubsequentSPSolutionCollector;
+    private SPFeatureDefinitionCollector SubsequentSPFeatureDefinitionCollector;
+    private SPServerCollector SubsequentSPServerCollector;
+    private SPServiceCollector SubsequentSPServiceCollector;
 
-    public override Descriptor Process()
+    public override ComponentCollector ForComponent(object componentToProcess)
     {
-      FarmDescriptor model = new FarmDescriptor(
-        ArtifactToCollect.Id,
-        ArtifactToCollect.Name,
-        ArtifactToCollect.DisplayName);
-
-      model.BuildVersion = ArtifactToCollect.BuildVersion;
-
-      //Collect elements with subsequent collectors
-
-      return model;
-    }
-
-    public virtual ComponentCollector ForComponent(SPFarm farm)
-    {
-      ArtifactToCollect = farm;
+      ComponentToProcess = componentToProcess as SPFarm;
 
       return this;
     }
 
-    public Descriptor Process(SPFarm artifactToProcess)
+    public override IEnumerable<Descriptor> Process(object componentToProcess)
     {
-      throw new NotImplementedException();
+      FarmDescriptor descriptor = Process(componentToProcess as SPFarm);
+      return new[] { descriptor };
     }
 
-    public override Descriptor Process(object componentToProcess)
+
+    public override IEnumerable<Descriptor> Process()
     {
-      throw new NotImplementedException();
+      FarmDescriptor descriptor = Process(SPFarm.Local);
+      return new[] { descriptor };
     }
 
-    public override ComponentCollector ForComponent(object componentToProcess)
+    public SPFarmCollector ForComponent(SPFarm componentToProcess)
     {
-      throw new NotImplementedException();
+      ComponentToProcess = componentToProcess;
+
+      return this;
+    }
+
+    public FarmDescriptor Process(SPFarm farm)
+    {
+      if (farm == null)
+        throw new ArgumentNullException(nameof(farm));
+
+      FarmDescriptor model = new FarmDescriptor(
+        farm.Id,
+        farm.Name,
+        farm.DisplayName);
+     
+
+      model.BuildVersion = farm.BuildVersion;
+
+      //Collect elements with subsequent collectors
+
+      //Collect solutions within the farm
+      foreach(SPSolution solution in farm.Solutions)
+      {
+        model.Solutions.Add(SubsequentSPSolutionCollector.Process(solution));
+      }
+
+      //Collect feature definitions within the farm
+      foreach (SPFeatureDefinition featureDefinition in farm.FeatureDefinitions)
+      {
+        model.FeatureDefinitions.Add(SubsequentSPFeatureDefinitionCollector.Process(featureDefinition));
+      }
+      
+      //Collect server instances within the farm
+      foreach (SPServer server in farm.Servers)
+      {
+        model.Servers.Add(SubsequentSPServerCollector.Process(server));
+      }
+      
+      return model;
+    }
+
+    public SPFarmCollector WithSubsequentCollector(SPSolutionCollector collector)
+    {
+      this.SubsequentSPSolutionCollector = collector;
+
+      return this;
+    }
+
+    public SPFarmCollector WithSubsequentCollector(SPFeatureDefinitionCollector collector)
+    {
+      this.SubsequentSPFeatureDefinitionCollector = collector;
+
+      return this;
+    }
+
+    public SPFarmCollector WithSubsequentCollector(SPServerCollector collector)
+    {
+      this.SubsequentSPServerCollector = collector;
+
+      return this;
+    }
+
+    public SPFarmCollector WithSubsequentCollector(SPServiceCollector collector)
+    {
+      this.SubsequentSPServiceCollector = collector;
+
+      return this;
     }
   }
 }

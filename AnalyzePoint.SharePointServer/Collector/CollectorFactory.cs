@@ -34,7 +34,10 @@ namespace AnalyzePoint.SharePointServer.Collector
 
     public SPFarmCollector CreateSPFarmCollector()
     {
-      return new SPFarmCollector().ForComponent(SPFarm.Local) as SPFarmCollector;
+      return new SPFarmCollector().ForComponent(SPFarm.Local)
+        .WithSubsequentCollector(CreateSPFeatureDefinitionCollector())
+        .WithSubsequentCollector(CreateSPServerCollector())
+        .WithSubsequentCollector(CreateSPSolutionCollector());
     }
 
     public SPListCollector CreateSPListCollector()
@@ -45,6 +48,21 @@ namespace AnalyzePoint.SharePointServer.Collector
     public SPWebCollector CreateSPWebCollector()
     {
       return new SPWebCollector();
+    }
+
+    public SPFeatureDefinitionCollector CreateSPFeatureDefinitionCollector()
+    {
+      return new SPFeatureDefinitionCollector();
+    }
+
+    public SPServerCollector CreateSPServerCollector()
+    {
+      return new SPServerCollector();
+    }
+
+    public SPSolutionCollector CreateSPSolutionCollector()
+    {
+      return new SPSolutionCollector();
     }
   }
 }

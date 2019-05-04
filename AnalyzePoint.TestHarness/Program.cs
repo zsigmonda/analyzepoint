@@ -21,10 +21,6 @@ namespace AnalyzePoint.TestHarness
       var v = collector.WithoutRecursion().Process();
 
       Console.ReadLine();
-
-      var x = SPFarm.Local.FeatureDefinitions.Select(fd => new { fd.SolutionId, fd.Scope, fd.Id, fd.Hidden, fd.Name});
-      var y = SPFarm.Local.Solutions.Select(fs => new { fs.Id, fs.DisplayName });
-      Console.ReadLine();
     }
   }
 }

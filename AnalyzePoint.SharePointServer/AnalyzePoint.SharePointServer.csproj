@@ -33,6 +33,9 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.SharePoint, Version=16.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -49,7 +52,10 @@
     </Compile>
     <Compile Include="Collector\CollectorFactory.cs" />
     <Compile Include="Collector\SPFarmCollector.cs" />
+    <Compile Include="Collector\SPFeatureDefinitionCollector.cs" />
     <Compile Include="Collector\SPListCollector.cs" />
+    <Compile Include="Collector\SPServerCollector.cs" />
+    <Compile Include="Collector\SPServiceCollector.cs" />
     <Compile Include="Collector\SPSiteCollectionCollector.cs" />
     <Compile Include="Collector\SPSolutionCollector.cs" />
     <Compile Include="Collector\SPWebCollector.cs" />
@@ -61,6 +67,8 @@
       <Name>AnalyzePoint.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

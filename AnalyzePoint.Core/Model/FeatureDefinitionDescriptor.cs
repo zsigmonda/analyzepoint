@@ -17,6 +17,10 @@ namespace AnalyzePoint.Core.Model
 
     public int CompatibilityLevel { get; set; }
 
+    public bool IsHidden { get; set; }
+
+    public string Description { get; set; }
+
     public FeatureDefinitionDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
 

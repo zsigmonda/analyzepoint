@@ -18,6 +18,8 @@ namespace AnalyzePoint.Core.Model
     /// </summary>
     public List<WebApplicationDescriptor> DeployedTo { get; protected set; }
 
+    public byte[] WspFile { get; set; }
+
     public SolutionDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
       this.FeatureDefinitions = new List<FeatureDefinitionDescriptor>();

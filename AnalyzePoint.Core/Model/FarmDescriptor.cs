@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public class FarmDescriptor : Descriptor, IFeatureTarget
+  public class FarmDescriptor : Descriptor
   {
     /// <summary>
     /// This list contains all the farm solutions that are installed on this farm. This list contains both deployed and retracted/not yet deployed solutions.
@@ -14,33 +14,31 @@ namespace AnalyzePoint.Core.Model
     public List<SolutionDescriptor> Solutions { get; protected set; }
 
     /// <summary>
-    /// This list contains all the features activated at farm level.
+    /// This list contains all the feature definitions registered within the farm.
     /// </summary>
-    public List<FeatureDescriptor> Features { get; protected set; }
+    public List<FeatureDefinitionDescriptor> FeatureDefinitions { get; protected set; }
 
     /// <summary>
-    /// This list contains all the feature definitions registeres within the farm.
+    /// This list contains all the logical server nodes that are teamed together into the farm.
     /// </summary>
-    public List<FeatureDescriptor> FeatureDefinitions { get; protected set; }
-
-    /// <summary>
-    /// This list contains all the web applications hosted within the farm, including the Central Administration portal.
-    /// </summary>
-    public List<WebApplicationDescriptor> WebApplications { get; protected set; }
-
     public List<ServerDescriptor> Servers { get; protected set; }
 
+    /// <summary>
+    /// This list contains all the service applications that are available in the farm.
+    /// </summary>
     public List<ServiceDescriptor> Services { get; protected set; }
 
+    /// <summary>
+    /// The build version of the farm. In a healthy SharePoint farm, all the server nodes have the exact same version.
+    /// </summary>
     public Version BuildVersion { get; set; }
 
     public FarmDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
       this.IsDeployed = true;
 
+      this.FeatureDefinitions = new List<FeatureDefinitionDescriptor>();
       this.Solutions = new List<SolutionDescriptor>();
-      this.Features = new List<FeatureDescriptor>();
-      this.WebApplications = new List<WebApplicationDescriptor>();
       this.Servers = new List<ServerDescriptor>();
       this.Services = new List<ServiceDescriptor>();
     }
