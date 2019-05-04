@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPFarmCollector : ComponentCollector
+  public class SPFarmCollector : IComponentCollector<FarmDescriptor>
   {
     private SPFarm ComponentToProcess;
 
@@ -19,24 +19,16 @@ namespace AnalyzePoint.SharePointServer.Collector
     private SPServerCollector SubsequentSPServerCollector;
     private SPServiceCollector SubsequentSPServiceCollector;
 
-    public override ComponentCollector ForComponent(object componentToProcess)
+    public SPFarmCollector()
+    {
+      ComponentToProcess = SPFarm.Local;
+    }
+
+    public IComponentCollector<FarmDescriptor> ForComponent(object componentToProcess)
     {
       ComponentToProcess = componentToProcess as SPFarm;
 
       return this;
-    }
-
-    public override IEnumerable<Descriptor> Process(object componentToProcess)
-    {
-      FarmDescriptor descriptor = Process(componentToProcess as SPFarm);
-      return new[] { descriptor };
-    }
-
-
-    public override IEnumerable<Descriptor> Process()
-    {
-      FarmDescriptor descriptor = Process(SPFarm.Local);
-      return new[] { descriptor };
     }
 
     public SPFarmCollector ForComponent(SPFarm componentToProcess)
@@ -46,7 +38,18 @@ namespace AnalyzePoint.SharePointServer.Collector
       return this;
     }
 
-    public FarmDescriptor Process(SPFarm farm)
+    public IEnumerable<FarmDescriptor> Process(object componentToProcess)
+    {
+      return Process(componentToProcess as SPFarm);
+    }
+
+
+    public IEnumerable<FarmDescriptor> Process()
+    {
+      return Process(ComponentToProcess);
+    }
+
+    public IEnumerable<FarmDescriptor> Process(SPFarm farm)
     {
       if (farm == null)
         throw new ArgumentNullException(nameof(farm));
@@ -56,30 +59,41 @@ namespace AnalyzePoint.SharePointServer.Collector
         farm.Name,
         farm.DisplayName);
      
-
       model.BuildVersion = farm.BuildVersion;
 
       //Collect elements with subsequent collectors
 
       //Collect solutions within the farm
-      foreach(SPSolution solution in farm.Solutions)
+      if (SubsequentSPSolutionCollector != null)
       {
-        model.Solutions.Add(SubsequentSPSolutionCollector.Process(solution));
-      }
-
-      //Collect feature definitions within the farm
-      foreach (SPFeatureDefinition featureDefinition in farm.FeatureDefinitions)
-      {
-        model.FeatureDefinitions.Add(SubsequentSPFeatureDefinitionCollector.Process(featureDefinition));
+        model.Solutions.AddRange(SubsequentSPSolutionCollector.Process(farm));
       }
       
       //Collect server instances within the farm
-      foreach (SPServer server in farm.Servers)
+      if (SubsequentSPServerCollector != null)
       {
-        model.Servers.Add(SubsequentSPServerCollector.Process(server));
+        model.Servers.AddRange(SubsequentSPServerCollector.Process(farm));
       }
-      
-      return model;
+
+      //Collect services within the farm
+      if (SubsequentSPServiceCollector != null)
+      {
+        model.Services.AddRange(SubsequentSPServiceCollector.Process(farm));
+      }
+
+      //If we have collected services and servers, we may collect their instances
+      if (SubsequentSPServerCollector != null && SubsequentSPServiceCollector != null)
+      {
+        ;
+      }
+
+      //Collect feature definitions of the farm
+      if (SubsequentSPFeatureDefinitionCollector != null)
+      {
+        model.FeatureDefinitions.AddRange(SubsequentSPFeatureDefinitionCollector.Process(farm));
+      }
+
+      return new[] { model };
     }
 
     public SPFarmCollector WithSubsequentCollector(SPSolutionCollector collector)

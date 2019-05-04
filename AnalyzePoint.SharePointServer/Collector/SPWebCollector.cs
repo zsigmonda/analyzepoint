@@ -8,39 +8,39 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPWebCollector : ComponentCollector
+  public class SPWebCollector : IRecursiveComponentCollector<SiteDescriptor>
   {
     public int RecursionDepthLimit { get; protected set; }
     public bool IsRecursionEnabled { get; protected set; }
 
-    public override ComponentCollector ForComponent(object componentToProcess)
+    public IComponentCollector<SiteDescriptor> ForComponent(object componentToProcess)
     {
       throw new NotImplementedException();
     }
 
-    public override IEnumerable<Descriptor> Process()
+    public IEnumerable<SiteDescriptor> Process()
     {
       throw new NotImplementedException();
     }
 
-    public override IEnumerable<Descriptor> Process(object componentToProcess)
+    public IEnumerable<SiteDescriptor> Process(object componentToProcess)
     {
       throw new NotImplementedException();
     }
 
-    public virtual ComponentCollector WithoutRecursion()
+    public IRecursiveComponentCollector<SiteDescriptor> WithoutRecursion()
     {
       IsRecursionEnabled = false;
 
       return this;
     }
 
-    public virtual ComponentCollector WithRecursion()
+    public IRecursiveComponentCollector<SiteDescriptor> WithRecursion()
     {
       return WithRecursion(0);
     }
 
-    public virtual ComponentCollector WithRecursion(int depthLimit)
+    public IRecursiveComponentCollector<SiteDescriptor> WithRecursion(int depthLimit)
     {
       RecursionDepthLimit = depthLimit;
       IsRecursionEnabled = true;

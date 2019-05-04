@@ -8,19 +8,19 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPSiteCollectionCollector : ComponentCollector
+  public class SPSiteCollectionCollector : IComponentCollector<SiteCollectionDescriptor>
   {
-    public override ComponentCollector ForComponent(object componentToProcess)
+    public IComponentCollector<SiteCollectionDescriptor> ForComponent(object componentToProcess)
     {
       throw new NotImplementedException();
     }
 
-    public override Descriptor Process()
+    public IEnumerable<SiteCollectionDescriptor> Process()
     {
       throw new NotImplementedException();
     }
 
-    public override Descriptor Process(object componentToProcess)
+    public IEnumerable<SiteCollectionDescriptor> Process(object componentToProcess)
     {
       throw new NotImplementedException();
     }

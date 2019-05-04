@@ -17,10 +17,15 @@ namespace AnalyzePoint.TestHarness
     {
       AnalyzePoint.SharePointServer.Collector.CollectorFactory cf = new SharePointServer.Collector.CollectorFactory();
       AnalyzePoint.Core.Collector.ArtifactCollector ac = new Core.Collector.ArtifactCollector(cf);
-      ComponentCollector collector = ac.CollectorFor<FarmDescriptor>();
-      var v = collector.WithoutRecursion().Process();
+      IComponentCollector<FarmDescriptor> collector = ac.CollectorFor<FarmDescriptor>();
+      var v = collector.Process();
 
       Console.ReadLine();
+    }
+
+    static void TestObservable()
+    {
+      System.Collections.ObjectModel.ObservableCollection<string> oc = new System.Collections.ObjectModel.ObservableCollection<string>();      
     }
   }
 }

@@ -11,23 +11,52 @@ using AnalyzePoint.Core.Configuration;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPSolutionCollector : ComponentCollector
+  public class SPSolutionCollector : IComponentCollector<SolutionDescriptor>
   {
-    public override ComponentCollector ForComponent(object componentToProcess)
+    private SPFarm ComponentToProcess;
+
+    public SPSolutionCollector()
     {
-      throw new NotImplementedException();
+      ComponentToProcess = SPFarm.Local;
+    }
+
+    public IComponentCollector<SolutionDescriptor> ForComponent(object componentToProcess)
+    {
+      ComponentToProcess = componentToProcess as SPFarm;
+
+      return this;
+    }
+
+    public SPSolutionCollector ForComponent(SPFarm componentToProcess)
+    {
+      ComponentToProcess = componentToProcess;
+
+      return this;
+    }
+
+    public IEnumerable<SolutionDescriptor> Process()
+    {
+      return Process(ComponentToProcess);
+    }
+
+    public IEnumerable<SolutionDescriptor> Process(object componentToProcess)
+    {
+      return Process(componentToProcess as SPFarm);
     }
 
     /// <summary>
     /// Collects all the farm solutions added to the SharePoint farm.
     /// </summary>
-    /// <param name="componentToProcess">The SharePoint farm where to look for solutions.</param>
+    /// <param name="farm">The SharePoint farm where to look for solutions.</param>
     /// <returns>An enumeration of farm solution descriptor objects.</returns>
-    public IEnumerable<SolutionDescriptor> Process(SPFarm componentToProcess)
+    public IEnumerable<SolutionDescriptor> Process(SPFarm farm)
     {
+      if (farm == null)
+        throw new ArgumentNullException(nameof(farm));
+
       List<SolutionDescriptor> resultSet = new List<SolutionDescriptor>();
 
-      foreach (SPSolution farmSolution in componentToProcess.Solutions)
+      foreach (SPSolution farmSolution in farm.Solutions)
       {
         SolutionDescriptor model = new SolutionDescriptor(farmSolution.Id, farmSolution.Name, farmSolution.DisplayName);
         model.IsDeployed = farmSolution.Deployed;
@@ -42,16 +71,6 @@ namespace AnalyzePoint.SharePointServer.Collector
       }
 
       return resultSet;
-    }
-
-    public override IEnumerable<Descriptor> Process()
-    {
-      throw new NotImplementedException();
-    }
-
-    public override IEnumerable<Descriptor> Process(object componentToProcess)
-    {
-      throw new NotImplementedException();
     }
   }
 }

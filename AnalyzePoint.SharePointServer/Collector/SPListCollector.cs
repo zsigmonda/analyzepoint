@@ -9,19 +9,19 @@ using Microsoft.SharePoint;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPListCollector : ComponentCollector
+  public class SPListCollector : IComponentCollector<ListDescriptor>
   {
-    public override ComponentCollector ForComponent(object componentToProcess)
+    public IComponentCollector<ListDescriptor> ForComponent(object componentToProcess)
     {
       throw new NotImplementedException();
     }
 
-    public override Descriptor Process()
+    public IEnumerable<ListDescriptor> Process()
     {
       throw new NotImplementedException();
     }
 
-    public override Descriptor Process(object componentToProcess)
+    public IEnumerable<ListDescriptor> Process(object componentToProcess)
     {
       throw new NotImplementedException();
     }

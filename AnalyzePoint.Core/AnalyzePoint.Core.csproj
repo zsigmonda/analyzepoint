@@ -53,7 +53,8 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Collector\ArtifactCollector.cs" />
-    <Compile Include="Collector\ComponentCollector.cs" />
+    <Compile Include="Collector\IComponentCollector.cs" />
+    <Compile Include="Collector\IRecursiveComponentCollector.cs" />
     <Compile Include="Common\EnumExtensions.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Configuration\AnalyzePointConfiguration.cs" />

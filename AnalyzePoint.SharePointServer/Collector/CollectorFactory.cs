@@ -12,21 +12,21 @@ namespace AnalyzePoint.SharePointServer.Collector
 {
   public class CollectorFactory : ICollectorFactory
   {
-    public ComponentCollector CreateCollectorFor<T>() where T : Descriptor
+    public IComponentCollector<T> CreateCollectorFor<T>() where T : Descriptor
     {
       if (typeof(T).Name == "FarmDescriptor")
       {
-        return CreateSPFarmCollector();
+        return CreateSPFarmCollector() as IComponentCollector<T>;
       }
 
       if (typeof(T).Name == "ListDescriptor")
       {
-        return CreateSPListCollector();
+        return CreateSPListCollector() as IComponentCollector<T>;
       }
 
       if (typeof(T).Name == "SitDescriptor")
       {
-        return CreateSPWebCollector();
+        return CreateSPWebCollector() as IComponentCollector<T>;
       }
 
       return null;

@@ -10,35 +10,59 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPFeatureDefinitionCollector : ComponentCollector
+  public class SPFeatureDefinitionCollector : IComponentCollector<FeatureDefinitionDescriptor>
   {
-    public override ComponentCollector ForComponent(object componentToProcess)
+    private SPFarm ComponentToProcess;
+
+    public SPFeatureDefinitionCollector()
     {
-      throw new NotImplementedException();
+      ComponentToProcess = SPFarm.Local;
     }
 
-    public override Descriptor Process()
+    public IComponentCollector<FeatureDefinitionDescriptor> ForComponent(object componentToProcess)
     {
-      throw new NotImplementedException();
+      ComponentToProcess = componentToProcess as SPFarm;
+
+      return this;
     }
 
-    public override Descriptor Process(object componentToProcess)
+    public SPFeatureDefinitionCollector ForComponent(SPFarm componentToProcess)
     {
-      throw new NotImplementedException();
+      ComponentToProcess = componentToProcess;
+
+      return this;
     }
 
-    public FeatureDefinitionDescriptor Process(SPFeatureDefinition componentToProcess)
+    public IEnumerable<FeatureDefinitionDescriptor> Process()
     {
-      FeatureDefinitionDescriptor model = new FeatureDefinitionDescriptor(componentToProcess.Id, componentToProcess.Name, String.Empty);     
+      return Process(ComponentToProcess);
+    }
 
-      
+    public IEnumerable<FeatureDefinitionDescriptor> Process(object componentToProcess)
+    {
+      return Process(componentToProcess as SPFarm);
+    }
 
-      model.DisplayName = componentToProcess.GetTitle(System.Threading.Thread.CurrentThread.CurrentCulture);
-      model.CompatibilityLevel = componentToProcess.CompatibilityLevel;
-      model.IsHidden = componentToProcess.Hidden;
-      model.Description = componentToProcess.GetDescription(System.Threading.Thread.CurrentThread.CurrentCulture);
+    public IEnumerable<FeatureDefinitionDescriptor> Process(SPFarm farm)
+    {
+      if (farm == null)
+        throw new ArgumentNullException(nameof(farm));
 
-      return model;
+      List<FeatureDefinitionDescriptor> resultSet = new List<FeatureDefinitionDescriptor>();
+
+      foreach (SPFeatureDefinition fd in farm.FeatureDefinitions)
+      {
+        FeatureDefinitionDescriptor model = new FeatureDefinitionDescriptor(fd.Id, fd.Name, String.Empty);
+
+        model.DisplayName = fd.GetTitle(System.Threading.Thread.CurrentThread.CurrentCulture);
+        model.CompatibilityLevel = fd.CompatibilityLevel;
+        model.IsHidden = fd.Hidden;
+        model.Description = fd.GetDescription(System.Threading.Thread.CurrentThread.CurrentCulture);
+
+        resultSet.Add(model);
+      }
+
+      return resultSet;
     }
   }
 }
