@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AnalyzePoint.Core.Common
+﻿namespace AnalyzePoint.Core.Common
 {
   /// <summary>
   /// Defines a set of values to describe the scope of a SharePoint feature definition.
@@ -49,5 +43,27 @@ namespace AnalyzePoint.Core.Common
     Custom = 8,
     ApplicationWithSearch = 9,
     WebFrontEndWithDistributedCache = 10
+  }
+
+  /// <summary>
+  /// Specifies the type of a SharePoint Service. 
+  /// </summary>
+  public enum ServiceType
+  {
+    Other,
+    TimerService,
+    CentralAdministrationService,
+    ContentService,
+    DatabaseService,
+    OutboundEmailService,
+    IncomingEmailService,
+    DiagnosticsService,
+    UserCodeService,
+    WindowsService,
+    TracingService,
+    UsageService,
+    IisWebService,
+    LoadBalancerService,
+    RequestManagementService
   }
 }

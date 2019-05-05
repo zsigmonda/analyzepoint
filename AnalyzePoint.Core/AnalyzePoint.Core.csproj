@@ -54,6 +54,7 @@
     </Compile>
     <Compile Include="Collector\ArtifactCollector.cs" />
     <Compile Include="Collector\IComponentCollector.cs" />
+    <Compile Include="Collector\IDefinitionBoundComponentCollector.cs" />
     <Compile Include="Collector\IRecursiveComponentCollector.cs" />
     <Compile Include="Common\EnumExtensions.cs" />
     <Compile Include="Common\Enums.cs" />
@@ -74,6 +75,8 @@
     <Compile Include="Model\SiteCollectionDescriptor.cs" />
     <Compile Include="Model\SiteDescriptor.cs" />
     <Compile Include="Model\SolutionDescriptor.cs" />
+    <Compile Include="Model\TimerJobDefinitionDescriptor.cs" />
+    <Compile Include="Model\TimerServiceDescriptor.cs" />
     <Compile Include="Model\WebApplicationDescriptor.cs" />
     <Compile Include="Model\WebServiceDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

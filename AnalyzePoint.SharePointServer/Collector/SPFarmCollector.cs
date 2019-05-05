@@ -42,8 +42,7 @@ namespace AnalyzePoint.SharePointServer.Collector
     {
       return Process(componentToProcess as SPFarm);
     }
-
-
+    
     public IEnumerable<FarmDescriptor> Process()
     {
       return Process(ComponentToProcess);

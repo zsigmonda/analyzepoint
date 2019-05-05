@@ -52,12 +52,14 @@
     </Compile>
     <Compile Include="Collector\CollectorFactory.cs" />
     <Compile Include="Collector\SPFarmCollector.cs" />
+    <Compile Include="Collector\SPFeatureCollector.cs" />
     <Compile Include="Collector\SPFeatureDefinitionCollector.cs" />
     <Compile Include="Collector\SPListCollector.cs" />
     <Compile Include="Collector\SPServerCollector.cs" />
     <Compile Include="Collector\SPServiceCollector.cs" />
-    <Compile Include="Collector\SPSiteCollectionCollector.cs" />
+    <Compile Include="Collector\SPSiteCollector.cs" />
     <Compile Include="Collector\SPSolutionCollector.cs" />
+    <Compile Include="Collector\SPWebApplicationCollector.cs" />
     <Compile Include="Collector\SPWebCollector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

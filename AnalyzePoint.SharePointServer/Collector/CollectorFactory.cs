@@ -14,22 +14,57 @@ namespace AnalyzePoint.SharePointServer.Collector
   {
     public IComponentCollector<T> CreateCollectorFor<T>() where T : Descriptor
     {
-      if (typeof(T).Name == "FarmDescriptor")
+      if (typeof(T).IsEquivalentTo(typeof(FarmDescriptor)))
       {
         return CreateSPFarmCollector() as IComponentCollector<T>;
       }
 
-      if (typeof(T).Name == "ListDescriptor")
+      if (typeof(T).IsEquivalentTo(typeof(ServerDescriptor)))
+      {
+        return CreateSPServerCollector() as IComponentCollector<T>;
+      }
+
+      if (typeof(T).IsEquivalentTo(typeof(ServiceDescriptor)))
+      {
+        return CreateSPServiceCollector() as IComponentCollector<T>;
+      }
+
+      if (typeof(T).IsEquivalentTo(typeof(FeatureDefinitionDescriptor)))
+      {
+        return CreateSPFeatureDefinitionCollector() as IComponentCollector<T>;
+      }
+
+      if (typeof(T).IsEquivalentTo(typeof(ListDescriptor)))
       {
         return CreateSPListCollector() as IComponentCollector<T>;
       }
 
-      if (typeof(T).Name == "SitDescriptor")
+      if (typeof(T).IsEquivalentTo(typeof(SiteDescriptor)))
       {
         return CreateSPWebCollector() as IComponentCollector<T>;
       }
 
-      return null;
+      if (typeof(T).IsEquivalentTo(typeof(FeatureDescriptor)))
+      {
+        return CreateSPFeatureCollector() as IComponentCollector<T>;
+      }
+
+      if (typeof(T).IsEquivalentTo(typeof(WebApplicationDescriptor)))
+      {
+        return CreateSPWebApplicationCollector() as IComponentCollector<T>;
+      }
+
+      if (typeof(T).IsEquivalentTo(typeof(SolutionDescriptor)))
+      {
+        return CreateSPSolutionCollector() as IComponentCollector<T>;
+      }
+
+      if (typeof(T).IsEquivalentTo(typeof(SiteCollectionDescriptor)))
+      {
+        return CreateSPSiteCollector() as IComponentCollector<T>;
+      }
+
+      throw new NotSupportedException($"Creating component collector for type {typeof(T).Name} is not supported.");
     }
 
     public SPFarmCollector CreateSPFarmCollector()
@@ -37,7 +72,16 @@ namespace AnalyzePoint.SharePointServer.Collector
       return new SPFarmCollector().ForComponent(SPFarm.Local)
         .WithSubsequentCollector(CreateSPFeatureDefinitionCollector())
         .WithSubsequentCollector(CreateSPServerCollector())
-        .WithSubsequentCollector(CreateSPSolutionCollector());
+        .WithSubsequentCollector(CreateSPSolutionCollector())
+        .WithSubsequentCollector(
+          CreateSPServiceCollector()
+          .WithSubsequentCollector(CreateSPFeatureCollector())
+          .WithSubsequentCollector(
+            CreateSPWebApplicationCollector()
+            .WithSubsequentCollector(CreateSPFeatureCollector())
+            .WithSubsequentCollector(CreateSPSiteCollector())
+          )
+        );
     }
 
     public SPListCollector CreateSPListCollector()
@@ -63,6 +107,26 @@ namespace AnalyzePoint.SharePointServer.Collector
     public SPSolutionCollector CreateSPSolutionCollector()
     {
       return new SPSolutionCollector();
+    }
+
+    public SPServiceCollector CreateSPServiceCollector()
+    {
+      return new SPServiceCollector();
+    }
+
+    public SPFeatureCollector CreateSPFeatureCollector()
+    {
+      return new SPFeatureCollector();
+    }
+
+    public SPWebApplicationCollector CreateSPWebApplicationCollector()
+    {
+      return new SPWebApplicationCollector();
+    }
+
+    public SPSiteCollector CreateSPSiteCollector()
+    {
+      return new SPSiteCollector();
     }
   }
 }

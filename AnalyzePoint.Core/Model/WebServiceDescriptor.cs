@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnalyzePoint.Core.Common;
 
 namespace AnalyzePoint.Core.Model
 {
@@ -20,7 +21,10 @@ namespace AnalyzePoint.Core.Model
 
     public WebServiceDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
-      ;
+      ServiceType = ServiceType.ContentService;
+
+      this.Features = new List<FeatureDescriptor>();
+      this.WebApplications = new List<WebApplicationDescriptor>();
     }
   }
 }

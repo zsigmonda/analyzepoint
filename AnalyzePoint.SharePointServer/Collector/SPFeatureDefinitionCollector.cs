@@ -50,14 +50,14 @@ namespace AnalyzePoint.SharePointServer.Collector
 
       List<FeatureDefinitionDescriptor> resultSet = new List<FeatureDefinitionDescriptor>();
 
-      foreach (SPFeatureDefinition fd in farm.FeatureDefinitions)
+      foreach (SPFeatureDefinition featureDefinition in farm.FeatureDefinitions)
       {
-        FeatureDefinitionDescriptor model = new FeatureDefinitionDescriptor(fd.Id, fd.Name, String.Empty);
+        FeatureDefinitionDescriptor model = new FeatureDefinitionDescriptor(featureDefinition.Id, featureDefinition.Name, String.Empty);
 
-        model.DisplayName = fd.GetTitle(System.Threading.Thread.CurrentThread.CurrentCulture);
-        model.CompatibilityLevel = fd.CompatibilityLevel;
-        model.IsHidden = fd.Hidden;
-        model.Description = fd.GetDescription(System.Threading.Thread.CurrentThread.CurrentCulture);
+        model.DisplayName = featureDefinition.GetTitle(System.Threading.Thread.CurrentThread.CurrentCulture);
+        model.CompatibilityLevel = featureDefinition.CompatibilityLevel;
+        model.IsHidden = featureDefinition.Hidden;
+        model.Description = featureDefinition.GetDescription(System.Threading.Thread.CurrentThread.CurrentCulture);
 
         resultSet.Add(model);
       }
