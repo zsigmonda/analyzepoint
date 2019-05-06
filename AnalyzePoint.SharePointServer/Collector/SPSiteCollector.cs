@@ -7,14 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.SharePoint;
+using log4net;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
   public class SPSiteCollector : ITargetedComponentCollector<SPSiteCollector, SiteCollectionDescriptor>,
     IDefinitionBoundComponentCollector<SPSiteCollector, SiteCollectionDescriptor, FeatureDefinitionDescriptor>
   {
+    private readonly ILog Logger = LogManager.GetLogger(typeof(SPSiteCollector));
     private SPWebApplication ComponentToProcess;
-    private IEnumerable<FeatureDefinitionDescriptor> ComponentDefinitions;
+    private IEnumerable<FeatureDefinitionDescriptor> FeatureDefinitions;
     private SPFeatureCollector SubsequentSPFeatureCollector;
     private SPWebCollector SubsequentSPWebCollector;
 
@@ -37,34 +39,49 @@ namespace AnalyzePoint.SharePointServer.Collector
 
     public IEnumerable<SiteCollectionDescriptor> Process(SPWebApplication webApplication)
     {
-      if (webApplication == null)
-        throw new ArgumentNullException(nameof(webApplication));
-
-      List<SiteCollectionDescriptor> resultSet = new List<SiteCollectionDescriptor>();
-
-      foreach(SPSite siteCollection in webApplication.Sites)
+      try
       {
-        SiteCollectionDescriptor model = new SiteCollectionDescriptor(siteCollection.ID, siteCollection.Url, siteCollection.Url);
+        if (webApplication == null)
+          throw new ArgumentNullException(nameof(webApplication));
 
-        if (SubsequentSPFeatureCollector != null)
+        List<SiteCollectionDescriptor> resultSet = new List<SiteCollectionDescriptor>();
+
+        foreach (SPSite siteCollection in webApplication.Sites)
         {
-          model.Features.AddRange(SubsequentSPFeatureCollector.WithComponentDefinitions(ComponentDefinitions).Process(siteCollection));
+          SiteCollectionDescriptor model = new SiteCollectionDescriptor(siteCollection.ID, siteCollection.Url, siteCollection.Url);
+
+          if (SubsequentSPFeatureCollector != null)
+          {
+            IEnumerable<FeatureDescriptor> features = SubsequentSPFeatureCollector.WithComponentDefinitions(this.FeatureDefinitions).Process(siteCollection);
+
+            foreach (var f in features)
+            {
+              model.Features.Add(f);
+            }
+          }
+
+          if (SubsequentSPWebCollector != null)
+          {
+            model.RootSite = SubsequentSPWebCollector.WithComponentDefinitions(FeatureDefinitions).WithoutRecursion().Process(siteCollection).FirstOrDefault();
+          }
+
+          resultSet.Add(model);
+
+          siteCollection.Dispose();
         }
 
-        if (SubsequentSPWebCollector != null)
-        {
-          model.RootSite = SubsequentSPWebCollector.WithComponentDefinitions(ComponentDefinitions).Process(siteCollection).FirstOrDefault();
-        }
-
-        resultSet.Add(model);
+        return resultSet;
       }
-
-      return resultSet;
+      catch (Exception ex)
+      {
+        Logger.Error("Error occured during collecting SharePoint site collections from SPWebApplication.", ex);
+        throw;
+      }
     }
 
     public SPSiteCollector WithComponentDefinitions(IEnumerable<FeatureDefinitionDescriptor> componentDefinitions)
     {
-      ComponentDefinitions = componentDefinitions;
+      FeatureDefinitions = componentDefinitions;
 
       return this;
     }

@@ -35,3 +35,6 @@ using System.Windows;
                                               //(used if a resource is not found in the page,
                                               // app, or any theme specific resource dictionaries)
 )]
+
+// Configure log4net using the .config file. The config file will be watched for changes.
+[assembly: log4net.Config.XmlConfigurator(Watch = true)]

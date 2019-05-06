@@ -8,6 +8,6 @@ namespace AnalyzePoint.Core.Model
 {
   interface IFeatureTarget
   {
-    List<FeatureDescriptor> Features { get; }
+    System.Collections.ObjectModel.ObservableCollection<FeatureDescriptor> Features { get; }
   }
 }

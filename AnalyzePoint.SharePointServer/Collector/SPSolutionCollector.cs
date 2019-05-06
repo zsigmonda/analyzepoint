@@ -8,11 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using AnalyzePoint.Core.Configuration;
+using log4net;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
   public class SPSolutionCollector : ITargetedComponentCollector<SPSolutionCollector, SolutionDescriptor>
   {
+    private readonly ILog Logger = LogManager.GetLogger(typeof(SPSolutionCollector));
     private SPFarm ComponentToProcess;
 
     public SPSolutionCollector()
@@ -51,26 +53,34 @@ namespace AnalyzePoint.SharePointServer.Collector
     /// <returns>An enumeration of farm solution descriptor objects.</returns>
     public IEnumerable<SolutionDescriptor> Process(SPFarm farm)
     {
-      if (farm == null)
-        throw new ArgumentNullException(nameof(farm));
-
-      List<SolutionDescriptor> resultSet = new List<SolutionDescriptor>();
-
-      foreach (SPSolution farmSolution in farm.Solutions)
+      try
       {
-        SolutionDescriptor model = new SolutionDescriptor(farmSolution.Id, farmSolution.Name, farmSolution.DisplayName);
-        model.IsDeployed = farmSolution.Deployed;
+        if (farm == null)
+          throw new ArgumentNullException(nameof(farm));
 
-        string tempFileName = Path.Combine(AnalyzePointConfiguration.Current.TemporaryFolder.Path, Path.GetRandomFileName());
+        List<SolutionDescriptor> resultSet = new List<SolutionDescriptor>();
 
-        farmSolution.SolutionFile.SaveAs(tempFileName);
+        foreach (SPSolution farmSolution in farm.Solutions)
+        {
+          SolutionDescriptor model = new SolutionDescriptor(farmSolution.Id, farmSolution.Name, farmSolution.DisplayName);
+          model.IsDeployed = farmSolution.Deployed;
 
-        model.WspFile = File.ReadAllBytes(tempFileName);
+          string tempFileName = Path.Combine(AnalyzePointConfiguration.Current.TemporaryFolder.Path, Path.GetRandomFileName());
 
-        resultSet.Add(model);
+          farmSolution.SolutionFile.SaveAs(tempFileName);
+
+          model.WspFile = File.ReadAllBytes(tempFileName);
+
+          resultSet.Add(model);
+        }
+
+        return resultSet;
       }
-
-      return resultSet;
+      catch (Exception ex)
+      {
+        Logger.Error("Error occured during collecting SharePoint farm solutions from SPFarm.", ex);
+        throw;
+      }
     }
   }
 }

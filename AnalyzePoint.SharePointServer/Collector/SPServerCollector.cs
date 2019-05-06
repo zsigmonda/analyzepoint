@@ -7,11 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AnalyzePoint.Core.Common;
+using log4net;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
   public class SPServerCollector : ITargetedComponentCollector<SPServerCollector, ServerDescriptor>
   {
+    private readonly ILog Logger = LogManager.GetLogger(typeof(SPServerCollector));
     private SPFarm ComponentToProcess;
 
     public SPServerCollector()
@@ -50,22 +52,30 @@ namespace AnalyzePoint.SharePointServer.Collector
     /// <returns>An enumeration of server descriptor objects.</returns>
     public IEnumerable<ServerDescriptor> Process(SPFarm farm)
     {
-      if (farm == null)
-        throw new ArgumentNullException(nameof(farm));
-
-      List<ServerDescriptor> resultSet = new List<ServerDescriptor>();
-
-      foreach (SPServer server in farm.Servers)
+      try
       {
-        ServerDescriptor model = new ServerDescriptor(server.Id, server.Name, server.DisplayName);
-        model.IsDeployed = true;
-        model.Role = EnumExtensions.ConvertByValue<SPServerRole, ServerRole>(server.Role);
-        model.Address = server.Address;
+        if (farm == null)
+          throw new ArgumentNullException(nameof(farm));
 
-        resultSet.Add(model);
+        List<ServerDescriptor> resultSet = new List<ServerDescriptor>();
+
+        foreach (SPServer server in farm.Servers)
+        {
+          ServerDescriptor model = new ServerDescriptor(server.Id, server.Name, server.DisplayName);
+          model.IsDeployed = true;
+          model.Role = EnumExtensions.ConvertByValue<SPServerRole, ServerRole>(server.Role);
+          model.Address = server.Address;
+
+          resultSet.Add(model);
+        }
+
+        return resultSet;
       }
-
-      return resultSet;
+      catch (Exception ex)
+      {
+        Logger.Error("Error occured during collecting SharePoint servers from SPFarm.", ex);
+        throw;
+      }
     }
   }
 }

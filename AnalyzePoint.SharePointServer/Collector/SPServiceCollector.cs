@@ -7,16 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AnalyzePoint.Core.Common;
+using log4net;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
   public class SPServiceCollector : IDefinitionBoundComponentCollector<SPServiceCollector, ServiceDescriptor, FeatureDefinitionDescriptor>,
     ITargetedComponentCollector<SPServiceCollector, ServiceDescriptor>
   {
+    private readonly ILog Logger = LogManager.GetLogger(typeof(SPServiceCollector));
     private SPFarm ComponentToProcess;
     private SPWebApplicationCollector SubsequentSPWebApplicationCollector;
     private SPFeatureCollector SubsequentSPFeatureCollector;
-    private IEnumerable<FeatureDefinitionDescriptor> ComponentDefinitions;
+    private IEnumerable<FeatureDefinitionDescriptor> FeatureDefinitions;
 
     public SPServiceCollector()
     {
@@ -48,80 +50,102 @@ namespace AnalyzePoint.SharePointServer.Collector
     }
 
     /// <summary>
-    /// Collects all the Services joined to the SharePoint farm.
+    /// Collects all Sharepoint services running on the SharePoint farm.
     /// </summary>
-    /// <param name="farm">The SharePoint farm where the Services belong to.</param>
-    /// <returns>An enumeration of Service descriptor objects.</returns>
+    /// <param name="farm">The SharePoint farm where the services belong to.</param>
+    /// <returns>An enumeration of service descriptor objects.</returns>
     public IEnumerable<ServiceDescriptor> Process(SPFarm farm)
     {
-      if (farm == null)
-        throw new ArgumentNullException(nameof(farm));
-
-      List<ServiceDescriptor> resultSet = new List<ServiceDescriptor>();
-
-      //These are specialized services
-      Guid contentWebServiceId = SPWebService.ContentService.Id;
-      Guid centralAdminWebServiceId = SPWebService.AdministrationService.Id;
-      Guid timerJobServiceId = farm.TimerService.Id;
-
-      foreach (SPService service in farm.Services)
+      try
       {
-        ServiceDescriptor model;
+        if (farm == null)
+          throw new ArgumentNullException(nameof(farm));
 
-        if (service.Id == contentWebServiceId)
+        List<ServiceDescriptor> resultSet = new List<ServiceDescriptor>();
+
+        //These are specialized services
+        Guid contentWebServiceId = SPWebService.ContentService.Id;
+        Guid centralAdminWebServiceId = SPWebService.AdministrationService.Id;
+        Guid timerJobServiceId = farm.TimerService.Id;
+
+        foreach (SPService service in farm.Services)
         {
-          model = new WebServiceDescriptor(service.Id, service.Name, service.DisplayName);
-          model.ServiceType = ServiceType.ContentService;
+          ServiceDescriptor model;
 
-          if (SubsequentSPWebApplicationCollector != null)
+          if (service.Id == contentWebServiceId)
           {
-            ((WebServiceDescriptor)model).WebApplications.AddRange(SubsequentSPWebApplicationCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(service as SPWebService));
+            model = new WebServiceDescriptor(service.Id, service.Name, service.DisplayName);
+            model.ServiceType = ServiceType.ContentService;
+
+            if (SubsequentSPWebApplicationCollector != null)
+            {
+              ((WebServiceDescriptor)model).WebApplications.AddRange(SubsequentSPWebApplicationCollector.WithComponentDefinitions(this.FeatureDefinitions).Process(service as SPWebService));
+            }
+
+            if (SubsequentSPFeatureCollector != null)
+            {
+              WebServiceDescriptor specificModel = (WebServiceDescriptor)model;
+
+              IEnumerable<FeatureDescriptor> features = SubsequentSPFeatureCollector.WithComponentDefinitions(this.FeatureDefinitions).Process(service as SPWebService);
+
+              foreach (var f in features)
+              {
+                specificModel.Features.Add(f);
+              }
+            }
+          }
+          else if (service.Id == centralAdminWebServiceId)
+          {
+            model = new WebServiceDescriptor(service.Id, service.Name, service.DisplayName);
+            model.ServiceType = ServiceType.CentralAdministrationService;
+
+            if (SubsequentSPWebApplicationCollector != null)
+            {
+              ((WebServiceDescriptor)model).WebApplications.AddRange(SubsequentSPWebApplicationCollector.WithComponentDefinitions(this.FeatureDefinitions).Process(service as SPWebService));
+            }
+
+            if (SubsequentSPFeatureCollector != null)
+            {
+              WebServiceDescriptor specificModel = (WebServiceDescriptor)model;
+
+              IEnumerable<FeatureDescriptor> features = SubsequentSPFeatureCollector.WithComponentDefinitions(this.FeatureDefinitions).Process(service as SPWebService);
+
+              foreach (var f in features)
+              {
+                specificModel.Features.Add(f);
+              }
+            }
+          }
+          else if (service.Id == timerJobServiceId)
+          {
+            model = new TimerServiceDescriptor(service.Id, service.Name, service.DisplayName);
+          }
+          else
+          {
+            model = new ServiceDescriptor(service.Id, service.Name, service.DisplayName);
+            model.ServiceType = GetServiceType(service);
           }
 
-          if (SubsequentSPFeatureCollector != null)
-          {
-            ((WebServiceDescriptor)model).Features.AddRange(SubsequentSPFeatureCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(service as SPWebService));
-          }
-        }
-        else if (service.Id == centralAdminWebServiceId)
-        {
-          model = new WebServiceDescriptor(service.Id, service.Name, service.DisplayName);
-          model.ServiceType = ServiceType.CentralAdministrationService;
+          model.IsDeployed = true;
+          model.TypeName = service.TypeName;
+          model.IsHidden = service.Hidden;
+          model.IsSytemService = service.SystemService;
 
-          if (SubsequentSPWebApplicationCollector != null)
-          {
-            ((WebServiceDescriptor)model).WebApplications.AddRange(SubsequentSPWebApplicationCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(service as SPWebService));
-          }
-
-          if (SubsequentSPFeatureCollector != null)
-          {
-            ((WebServiceDescriptor)model).Features.AddRange(SubsequentSPFeatureCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(service as SPWebService));
-          }
-        }
-        else if (service.Id == timerJobServiceId)
-        {
-          model = new TimerServiceDescriptor(service.Id, service.Name, service.DisplayName);
-        }
-        else
-        {
-          model = new ServiceDescriptor(service.Id, service.Name, service.DisplayName);
-          model.ServiceType = GetServiceType(service);
+          resultSet.Add(model);
         }
 
-        model.IsDeployed = true;
-        model.TypeName = service.TypeName;
-        model.IsHidden = service.Hidden;
-        model.IsSytemService = service.SystemService;
-
-        resultSet.Add(model);
+        return resultSet;
       }
-
-      return resultSet;
+      catch (Exception ex)
+      {
+        Logger.Error("Error occured during collecting SharePoint services from SPFarm.", ex);
+        throw;
+      }
     }
 
     public SPServiceCollector WithComponentDefinitions(IEnumerable<FeatureDefinitionDescriptor> componentDefinitions)
     {
-      ComponentDefinitions = componentDefinitions;
+      FeatureDefinitions = componentDefinitions;
 
       return this;
     }

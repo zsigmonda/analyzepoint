@@ -1,6 +1,7 @@
 ﻿using AnalyzePoint.Core.Collector;
 using AnalyzePoint.Core.Model;
 using AnalyzePoint.SharePointServer.Collector;
+using log4net;
 using Microsoft.SharePoint;
 using Microsoft.SharePoint.Administration;
 using System;
@@ -13,19 +14,24 @@ namespace AnalyzePoint.TestHarness
 {
   class Program
   {
+    private static readonly ILog Logger = LogManager.GetLogger(typeof(CollectorFactory));
+
     static void Main(string[] args)
     {
+      Logger.Info("TestHarness started.");
+
       AnalyzePoint.SharePointServer.Collector.CollectorFactory cf = new SharePointServer.Collector.CollectorFactory();
       AnalyzePoint.Core.Collector.ArtifactCollector ac = new Core.Collector.ArtifactCollector(cf);
       IComponentCollector<FarmDescriptor> collector = ac.CollectorFor<FarmDescriptor>();
       var v = collector.Process();
 
-      Console.ReadLine();
-    }
+      var v2 = v.First().FeatureDefinitions.Where(f => f.ContainingSolution != null).ToList();
 
-    static void TestObservable()
-    {
-      System.Collections.ObjectModel.ObservableCollection<string> oc = new System.Collections.ObjectModel.ObservableCollection<string>();      
+      Logger.Info("TestHarness finished executing.");
+
+      Console.ReadLine();
+
+      Logger.Info("TestHarness exited.");
     }
   }
 }

@@ -29,6 +29,11 @@ namespace AnalyzePoint.Core.Model
     public List<ServiceDescriptor> Services { get; protected set; }
 
     /// <summary>
+    /// This list contains all the service instances in the farm. A service istance is a nominated pair of a server and a service.
+    /// </summary>
+    public List<ServiceInstanceDescriptor> ServiceInstances { get; protected set; }
+
+    /// <summary>
     /// The build version of the farm. In a healthy SharePoint farm, all the server nodes have the exact same version.
     /// </summary>
     public Version BuildVersion { get; set; }
@@ -41,6 +46,7 @@ namespace AnalyzePoint.Core.Model
       this.Solutions = new List<SolutionDescriptor>();
       this.Servers = new List<ServerDescriptor>();
       this.Services = new List<ServiceDescriptor>();
+      this.ServiceInstances = new List<ServiceInstanceDescriptor>();
     }
   }
 }

@@ -7,12 +7,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AnalyzePoint.Core.Common;
+using log4net;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPFeatureDefinitionCollector : ITargetedComponentCollector<SPFeatureDefinitionCollector, FeatureDefinitionDescriptor>
+  public class SPFeatureDefinitionCollector : ITargetedComponentCollector<SPFeatureDefinitionCollector, FeatureDefinitionDescriptor>,
+    IDefinitionBoundComponentCollector<SPFeatureDefinitionCollector, FeatureDefinitionDescriptor, SolutionDescriptor>
   {
+    private readonly ILog Logger = LogManager.GetLogger(typeof(SPFeatureDefinitionCollector));
     private SPFarm ComponentToProcess;
+    private IEnumerable<SolutionDescriptor> Solutions;
 
     public SPFeatureDefinitionCollector()
     {
@@ -45,24 +50,50 @@ namespace AnalyzePoint.SharePointServer.Collector
 
     public IEnumerable<FeatureDefinitionDescriptor> Process(SPFarm farm)
     {
-      if (farm == null)
-        throw new ArgumentNullException(nameof(farm));
-
-      List<FeatureDefinitionDescriptor> resultSet = new List<FeatureDefinitionDescriptor>();
-
-      foreach (SPFeatureDefinition featureDefinition in farm.FeatureDefinitions)
+      try
       {
-        FeatureDefinitionDescriptor model = new FeatureDefinitionDescriptor(featureDefinition.Id, featureDefinition.Name, String.Empty);
+        if (farm == null)
+          throw new ArgumentNullException(nameof(farm));
 
-        model.DisplayName = featureDefinition.GetTitle(System.Threading.Thread.CurrentThread.CurrentCulture);
-        model.CompatibilityLevel = featureDefinition.CompatibilityLevel;
-        model.IsHidden = featureDefinition.Hidden;
-        model.Description = featureDefinition.GetDescription(System.Threading.Thread.CurrentThread.CurrentCulture);
+        List<FeatureDefinitionDescriptor> resultSet = new List<FeatureDefinitionDescriptor>();
 
-        resultSet.Add(model);
+        foreach (SPFeatureDefinition featureDefinition in farm.FeatureDefinitions)
+        {
+          FeatureDefinitionDescriptor model = new FeatureDefinitionDescriptor(featureDefinition.Id, featureDefinition.Name, String.Empty);
+
+          model.DisplayName = featureDefinition.GetTitle(System.Threading.Thread.CurrentThread.CurrentCulture);
+          model.CompatibilityLevel = featureDefinition.CompatibilityLevel;
+          model.IsHidden = featureDefinition.Hidden;
+          model.Description = featureDefinition.GetDescription(System.Threading.Thread.CurrentThread.CurrentCulture);
+          model.Version = featureDefinition.Version;
+          model.Scope = featureDefinition.Scope.ConvertByValue<SPFeatureScope, FeatureScope>();
+
+          if (Solutions != null)
+          {
+            model.ContainingSolution = Solutions.Where(s => s.ID == featureDefinition.SolutionId).SingleOrDefault();
+            if (model.ContainingSolution != null)
+            {
+              model.ContainingSolution.FeatureDefinitions.Add(model);
+            }
+          }
+
+          resultSet.Add(model);
+        }
+
+        return resultSet;
       }
+      catch (Exception ex)
+      {
+        Logger.Error("Error occured during collecting SharePoint feature definitions from SPFarm.", ex);
+        throw;
+      }
+    }
 
-      return resultSet;
+    public SPFeatureDefinitionCollector WithComponentDefinitions(IEnumerable<SolutionDescriptor> componentDefinitions)
+    {
+      Solutions = componentDefinitions;
+
+      return this;
     }
   }
 }

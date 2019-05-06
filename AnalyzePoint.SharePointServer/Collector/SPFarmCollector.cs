@@ -1,5 +1,6 @@
 ﻿using AnalyzePoint.Core.Collector;
 using AnalyzePoint.Core.Model;
+using log4net;
 using Microsoft.SharePoint;
 using Microsoft.SharePoint.Administration;
 using System;
@@ -12,17 +13,15 @@ namespace AnalyzePoint.SharePointServer.Collector
 {
   public class SPFarmCollector : ITargetedComponentCollector<SPFarmCollector, FarmDescriptor>
   {
-    private SPFarm ComponentToProcess;
+    private readonly ILog Logger = LogManager.GetLogger(typeof(SPFarmCollector));
+
+    private SPFarm ComponentToProcess = SPFarm.Local;
 
     private SPSolutionCollector SubsequentSPSolutionCollector;
     private SPFeatureDefinitionCollector SubsequentSPFeatureDefinitionCollector;
     private SPServerCollector SubsequentSPServerCollector;
     private SPServiceCollector SubsequentSPServiceCollector;
-
-    public SPFarmCollector()
-    {
-      ComponentToProcess = SPFarm.Local;
-    }
+    private SPServiceInstanceCollector SubsequentSPServiceInstanceCollector;
 
     public SPFarmCollector ForComponent(object componentToProcess)
     {
@@ -50,51 +49,63 @@ namespace AnalyzePoint.SharePointServer.Collector
 
     public IEnumerable<FarmDescriptor> Process(SPFarm farm)
     {
-      if (farm == null)
-        throw new ArgumentNullException(nameof(farm));
-
-      FarmDescriptor model = new FarmDescriptor(
-        farm.Id,
-        farm.Name,
-        farm.DisplayName);
-     
-      model.BuildVersion = farm.BuildVersion;
-
-      //Collect elements with subsequent collectors
-
-      //Collect solutions within the farm
-      if (SubsequentSPSolutionCollector != null)
+      try
       {
-        model.Solutions.AddRange(SubsequentSPSolutionCollector.Process(farm));
-      }
+        if (farm == null)
+          throw new ArgumentNullException(nameof(farm));
 
-      //Collect feature definitions of the farm
-      if (SubsequentSPFeatureDefinitionCollector != null)
+        Logger.Info($"Collecting objects from SharePoint farm started.");
+
+        FarmDescriptor model = new FarmDescriptor(
+          farm.Id,
+          farm.Name,
+          farm.DisplayName);
+
+        model.BuildVersion = farm.BuildVersion;
+
+        //Collect elements with subsequent collectors
+
+        //Collect solutions within the farm
+        if (SubsequentSPSolutionCollector != null)
+        {
+          model.Solutions.AddRange(SubsequentSPSolutionCollector.Process(farm));
+        }
+
+        //Collect feature definitions of the farm, and bind them to the solutions
+        if (SubsequentSPFeatureDefinitionCollector != null)
+        {
+          model.FeatureDefinitions.AddRange(SubsequentSPFeatureDefinitionCollector.WithComponentDefinitions(model.Solutions).Process(farm));
+        }
+
+        //Collect server instances within the farm
+        if (SubsequentSPServerCollector != null)
+        {
+          model.Servers.AddRange(SubsequentSPServerCollector.Process(farm));
+        }
+
+        //Collect services within the farm
+        if (SubsequentSPServiceCollector != null)
+        {
+          model.Services.AddRange(SubsequentSPServiceCollector.WithComponentDefinitions(model.FeatureDefinitions).Process(farm));
+        }
+
+        //If we have collected services and servers, we may collect their instances
+        if (SubsequentSPServerCollector != null && SubsequentSPServiceCollector != null && SubsequentSPServiceInstanceCollector != null)
+        {
+          model.ServiceInstances.AddRange(SubsequentSPServiceInstanceCollector.WithComponentDefinitions(model.Servers).WithComponentDefinitions(model.Services).Process(farm));
+        }
+
+        return new[] { model };
+      }
+      catch (Exception ex)
       {
-        model.FeatureDefinitions.AddRange(SubsequentSPFeatureDefinitionCollector.Process(farm));
+        Logger.Error("Error occured during collecting SharePoint Farm artifacts.", ex);
+        throw;
       }
-
-      //Collect server instances within the farm
-      if (SubsequentSPServerCollector != null)
+      finally
       {
-        model.Servers.AddRange(SubsequentSPServerCollector.Process(farm));
+        Logger.Info($"Collecting objects from SharePoint farm finished.");
       }
-
-      //Collect services within the farm
-      if (SubsequentSPServiceCollector != null)
-      {
-        model.Services.AddRange(SubsequentSPServiceCollector.WithComponentDefinitions(model.FeatureDefinitions).Process(farm));
-      }
-
-      //If we have collected services and servers, we may collect their instances
-      if (SubsequentSPServerCollector != null && SubsequentSPServiceCollector != null)
-      {
-        ;
-      }
-
-
-
-      return new[] { model };
     }
 
     public SPFarmCollector WithSubsequentCollector(SPSolutionCollector collector)
@@ -121,6 +132,13 @@ namespace AnalyzePoint.SharePointServer.Collector
     public SPFarmCollector WithSubsequentCollector(SPServiceCollector collector)
     {
       this.SubsequentSPServiceCollector = collector;
+
+      return this;
+    }
+
+    public SPFarmCollector WithSubsequentCollector(SPServiceInstanceCollector collector)
+    {
+      this.SubsequentSPServiceInstanceCollector = collector;
 
       return this;
     }

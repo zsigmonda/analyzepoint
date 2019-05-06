@@ -9,8 +9,6 @@ namespace AnalyzePoint.Core.Model
 {
   public class ServiceDescriptor : Descriptor
   {
-    public List<ServiceInstanceDescriptor> Instances { get; protected set; }
-
     public string TypeName { get; set; }
 
     public bool IsHidden { get; set; }
@@ -23,7 +21,6 @@ namespace AnalyzePoint.Core.Model
     {
       IsDeployed = true;
       ServiceType = ServiceType.Other;
-      this.Instances = new List<ServiceInstanceDescriptor>();
     }
 
     public override string ToString()

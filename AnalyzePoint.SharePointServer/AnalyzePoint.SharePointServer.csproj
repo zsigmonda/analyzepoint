@@ -57,6 +57,7 @@
     <Compile Include="Collector\SPListCollector.cs" />
     <Compile Include="Collector\SPServerCollector.cs" />
     <Compile Include="Collector\SPServiceCollector.cs" />
+    <Compile Include="Collector\SPServiceInstanceCollector.cs" />
     <Compile Include="Collector\SPSiteCollector.cs" />
     <Compile Include="Collector\SPSolutionCollector.cs" />
     <Compile Include="Collector\SPWebApplicationCollector.cs" />
@@ -70,6 +71,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

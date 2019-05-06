@@ -8,6 +8,9 @@ namespace AnalyzePoint.Core.Model
 {
   public class ServiceInstanceDescriptor : Descriptor
   {
+    public ServiceDescriptor Service { get; set; }
+    public ServerDescriptor Server { get; set; }
+
     public ServiceInstanceDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
       IsDeployed = true;

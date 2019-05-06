@@ -6,65 +6,83 @@ using System.Threading.Tasks;
 using AnalyzePoint.Core.Collector;
 using AnalyzePoint.Core.Factory;
 using AnalyzePoint.Core.Model;
+using log4net;
 using Microsoft.SharePoint.Administration;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
   public class CollectorFactory : ICollectorFactory
   {
+    private readonly ILog Logger = LogManager.GetLogger(typeof(CollectorFactory));
+
     public IComponentCollector<T> CreateCollectorFor<T>() where T : Descriptor
     {
-      if (typeof(T).IsEquivalentTo(typeof(FarmDescriptor)))
+      try
       {
-        return CreateSPFarmCollector() as IComponentCollector<T>;
-      }
+        Logger.Debug($"Creating component collector for type {typeof(T).AssemblyQualifiedName}");
 
-      if (typeof(T).IsEquivalentTo(typeof(ServerDescriptor)))
+        if (typeof(T).IsEquivalentTo(typeof(FarmDescriptor)))
+        {
+          return CreateSPFarmCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(ServerDescriptor)))
+        {
+          return CreateSPServerCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(ServiceDescriptor)))
+        {
+          return CreateSPServiceCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(ServiceInstanceDescriptor)))
+        {
+          return CreateSPServiceInstanceCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(FeatureDefinitionDescriptor)))
+        {
+          return CreateSPFeatureDefinitionCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(ListDescriptor)))
+        {
+          return CreateSPListCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(SiteDescriptor)))
+        {
+          return CreateSPWebCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(FeatureDescriptor)))
+        {
+          return CreateSPFeatureCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(WebApplicationDescriptor)))
+        {
+          return CreateSPWebApplicationCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(SolutionDescriptor)))
+        {
+          return CreateSPSolutionCollector() as IComponentCollector<T>;
+        }
+
+        if (typeof(T).IsEquivalentTo(typeof(SiteCollectionDescriptor)))
+        {
+          return CreateSPSiteCollector() as IComponentCollector<T>;
+        }
+
+        throw new NotSupportedException($"Creating component collector for type {typeof(T).AssemblyQualifiedName} is not supported.");
+      }
+      catch (Exception ex)
       {
-        return CreateSPServerCollector() as IComponentCollector<T>;
+        Logger.Error(ex.Message, ex);
+        throw;
       }
-
-      if (typeof(T).IsEquivalentTo(typeof(ServiceDescriptor)))
-      {
-        return CreateSPServiceCollector() as IComponentCollector<T>;
-      }
-
-      if (typeof(T).IsEquivalentTo(typeof(FeatureDefinitionDescriptor)))
-      {
-        return CreateSPFeatureDefinitionCollector() as IComponentCollector<T>;
-      }
-
-      if (typeof(T).IsEquivalentTo(typeof(ListDescriptor)))
-      {
-        return CreateSPListCollector() as IComponentCollector<T>;
-      }
-
-      if (typeof(T).IsEquivalentTo(typeof(SiteDescriptor)))
-      {
-        return CreateSPWebCollector() as IComponentCollector<T>;
-      }
-
-      if (typeof(T).IsEquivalentTo(typeof(FeatureDescriptor)))
-      {
-        return CreateSPFeatureCollector() as IComponentCollector<T>;
-      }
-
-      if (typeof(T).IsEquivalentTo(typeof(WebApplicationDescriptor)))
-      {
-        return CreateSPWebApplicationCollector() as IComponentCollector<T>;
-      }
-
-      if (typeof(T).IsEquivalentTo(typeof(SolutionDescriptor)))
-      {
-        return CreateSPSolutionCollector() as IComponentCollector<T>;
-      }
-
-      if (typeof(T).IsEquivalentTo(typeof(SiteCollectionDescriptor)))
-      {
-        return CreateSPSiteCollector() as IComponentCollector<T>;
-      }
-
-      throw new NotSupportedException($"Creating component collector for type {typeof(T).Name} is not supported.");
     }
 
     public SPFarmCollector CreateSPFarmCollector()
@@ -73,14 +91,20 @@ namespace AnalyzePoint.SharePointServer.Collector
         .WithSubsequentCollector(CreateSPFeatureDefinitionCollector())
         .WithSubsequentCollector(CreateSPServerCollector())
         .WithSubsequentCollector(CreateSPSolutionCollector())
+        .WithSubsequentCollector(CreateSPServiceInstanceCollector())
         .WithSubsequentCollector(
           CreateSPServiceCollector()
           .WithSubsequentCollector(CreateSPFeatureCollector())
           .WithSubsequentCollector(
             CreateSPWebApplicationCollector()
             .WithSubsequentCollector(CreateSPFeatureCollector())
-            .WithSubsequentCollector(CreateSPSiteCollector())
-          )
+            .WithSubsequentCollector(CreateSPSiteCollector()
+              .WithSubsequentCollector(CreateSPFeatureCollector())
+              .WithSubsequentCollector(CreateSPWebCollector()
+                .WithSubsequentCollector(CreateSPFeatureCollector())
+                )
+              )
+            )
         );
     }
 
@@ -112,6 +136,11 @@ namespace AnalyzePoint.SharePointServer.Collector
     public SPServiceCollector CreateSPServiceCollector()
     {
       return new SPServiceCollector();
+    }
+
+    public SPServiceInstanceCollector CreateSPServiceInstanceCollector()
+    {
+      return new SPServiceInstanceCollector();
     }
 
     public SPFeatureCollector CreateSPFeatureCollector()
