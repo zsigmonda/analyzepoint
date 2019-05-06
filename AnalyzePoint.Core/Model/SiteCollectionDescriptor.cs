@@ -13,6 +13,8 @@ namespace AnalyzePoint.Core.Model
     /// </summary>
     public List<FeatureDescriptor> Features { get; protected set; }
 
+    public SiteDescriptor RootSite { get; set; }
+
     public SiteCollectionDescriptor(Guid id, string name, string displayName) : base(id, name, displayName)
     {
       this.Features = new List<FeatureDescriptor>();

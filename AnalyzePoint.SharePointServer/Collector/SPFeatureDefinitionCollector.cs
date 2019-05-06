@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPFeatureDefinitionCollector : IComponentCollector<FeatureDefinitionDescriptor>
+  public class SPFeatureDefinitionCollector : ITargetedComponentCollector<SPFeatureDefinitionCollector, FeatureDefinitionDescriptor>
   {
     private SPFarm ComponentToProcess;
 
@@ -19,7 +19,7 @@ namespace AnalyzePoint.SharePointServer.Collector
       ComponentToProcess = SPFarm.Local;
     }
 
-    public IComponentCollector<FeatureDefinitionDescriptor> ForComponent(object componentToProcess)
+    public SPFeatureDefinitionCollector ForComponent(object componentToProcess)
     {
       ComponentToProcess = componentToProcess as SPFarm;
 

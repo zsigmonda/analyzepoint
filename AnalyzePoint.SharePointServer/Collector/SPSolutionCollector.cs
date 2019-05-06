@@ -11,7 +11,7 @@ using AnalyzePoint.Core.Configuration;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPSolutionCollector : IComponentCollector<SolutionDescriptor>
+  public class SPSolutionCollector : ITargetedComponentCollector<SPSolutionCollector, SolutionDescriptor>
   {
     private SPFarm ComponentToProcess;
 
@@ -20,7 +20,7 @@ namespace AnalyzePoint.SharePointServer.Collector
       ComponentToProcess = SPFarm.Local;
     }
 
-    public IComponentCollector<SolutionDescriptor> ForComponent(object componentToProcess)
+    public SPSolutionCollector ForComponent(object componentToProcess)
     {
       ComponentToProcess = componentToProcess as SPFarm;
 

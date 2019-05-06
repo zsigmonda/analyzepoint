@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPFeatureCollector : IDefinitionBoundComponentCollector<FeatureDescriptor, FeatureDefinitionDescriptor>
+  public class SPFeatureCollector : IDefinitionBoundComponentCollector<SPFeatureCollector, FeatureDescriptor, FeatureDefinitionDescriptor>,
+    ITargetedComponentCollector<SPFeatureCollector, FeatureDescriptor>
   {
     private object ComponentToProcess;
     private IEnumerable<FeatureDefinitionDescriptor> ComponentDefinitions;
 
-    public IComponentCollector<FeatureDescriptor> ForComponent(object componentToProcess)
+    public SPFeatureCollector ForComponent(object componentToProcess)
     {
       ComponentToProcess = componentToProcess;
 
@@ -91,7 +92,7 @@ namespace AnalyzePoint.SharePointServer.Collector
       return resultSet;
     }
 
-    public IComponentCollector<FeatureDescriptor> WithComponentDefinitions(IEnumerable<FeatureDefinitionDescriptor> componentDefinitions)
+    public SPFeatureCollector WithComponentDefinitions(IEnumerable<FeatureDefinitionDescriptor> componentDefinitions)
     {
       ComponentDefinitions = componentDefinitions;
 

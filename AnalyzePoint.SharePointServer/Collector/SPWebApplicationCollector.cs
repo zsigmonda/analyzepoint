@@ -9,18 +9,20 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPWebApplicationCollector : IComponentCollector<WebApplicationDescriptor>
+  public class SPWebApplicationCollector : IDefinitionBoundComponentCollector<SPWebApplicationCollector, WebApplicationDescriptor, FeatureDefinitionDescriptor>,
+    ITargetedComponentCollector<SPWebApplicationCollector, WebApplicationDescriptor>
   {
     private SPWebService ComponentToProcess;
     private SPFeatureCollector SubsequentSPFeatureCollector;
     private SPSiteCollector SubsequentSPSiteCollector;
+    private IEnumerable<FeatureDefinitionDescriptor> ComponentDefinitions;
 
     public SPWebApplicationCollector()
     {
       ComponentToProcess = SPWebService.ContentService;
     }
 
-    public IComponentCollector<WebApplicationDescriptor> ForComponent(object componentToProcess)
+    public SPWebApplicationCollector ForComponent(object componentToProcess)
     {
       ComponentToProcess = componentToProcess as SPWebService;
 
@@ -57,18 +59,25 @@ namespace AnalyzePoint.SharePointServer.Collector
 
         if (SubsequentSPFeatureCollector != null)
         {
-          model.Features.AddRange(SubsequentSPFeatureCollector.Process(webApp));
+          model.Features.AddRange(SubsequentSPFeatureCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(webApp));
         }
 
         if (SubsequentSPSiteCollector != null)
         {
-          model.SiteCollections.AddRange(SubsequentSPSiteCollector.Process(webApp));
+          model.SiteCollections.AddRange(SubsequentSPSiteCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(webApp));
         }
 
         resultSet.Add(model);
       }
 
       return resultSet;
+    }
+
+    public SPWebApplicationCollector WithComponentDefinitions(IEnumerable<FeatureDefinitionDescriptor> componentDefinitions)
+    {
+      this.ComponentDefinitions = componentDefinitions;
+
+      return this;
     }
 
     public SPWebApplicationCollector WithSubsequentCollector(SPFeatureCollector collector)

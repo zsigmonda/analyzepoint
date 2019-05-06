@@ -10,7 +10,7 @@ using AnalyzePoint.Core.Common;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPServerCollector : IComponentCollector<ServerDescriptor>
+  public class SPServerCollector : ITargetedComponentCollector<SPServerCollector, ServerDescriptor>
   {
     private SPFarm ComponentToProcess;
 
@@ -19,7 +19,7 @@ namespace AnalyzePoint.SharePointServer.Collector
       ComponentToProcess = SPFarm.Local;
     }
 
-    public IComponentCollector<ServerDescriptor> ForComponent(object componentToProcess)
+    public SPServerCollector ForComponent(object componentToProcess)
     {
       ComponentToProcess = componentToProcess as SPFarm;
 

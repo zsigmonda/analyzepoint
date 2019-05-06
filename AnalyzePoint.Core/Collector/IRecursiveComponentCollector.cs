@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Collector
 {
-  public interface IRecursiveComponentCollector<T> : IComponentCollector<T> where T : Descriptor
+  public interface IRecursiveComponentCollector<Self, T> : IComponentCollector<T>
+    where Self : IRecursiveComponentCollector<Self, T>
+    where T : Descriptor
   {
     bool IsRecursionEnabled { get; }
     int RecursionDepthLimit { get; }
   
-    IRecursiveComponentCollector<T> WithoutRecursion();
-    IRecursiveComponentCollector<T> WithRecursion();
-    IRecursiveComponentCollector<T> WithRecursion(int depthLimit);
+    Self WithoutRecursion();
+    Self WithRecursion();
+    Self WithRecursion(int depthLimit);
   }
 }

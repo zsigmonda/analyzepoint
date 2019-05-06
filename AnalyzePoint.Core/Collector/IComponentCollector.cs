@@ -11,6 +11,5 @@ namespace AnalyzePoint.Core.Collector
   {
     IEnumerable<T> Process();
     IEnumerable<T> Process(object componentToProcess);
-    IComponentCollector<T> ForComponent(object componentToProcess);
   }
 }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPFarmCollector : IComponentCollector<FarmDescriptor>
+  public class SPFarmCollector : ITargetedComponentCollector<SPFarmCollector, FarmDescriptor>
   {
     private SPFarm ComponentToProcess;
 
@@ -24,7 +24,7 @@ namespace AnalyzePoint.SharePointServer.Collector
       ComponentToProcess = SPFarm.Local;
     }
 
-    public IComponentCollector<FarmDescriptor> ForComponent(object componentToProcess)
+    public SPFarmCollector ForComponent(object componentToProcess)
     {
       ComponentToProcess = componentToProcess as SPFarm;
 
@@ -67,7 +67,13 @@ namespace AnalyzePoint.SharePointServer.Collector
       {
         model.Solutions.AddRange(SubsequentSPSolutionCollector.Process(farm));
       }
-      
+
+      //Collect feature definitions of the farm
+      if (SubsequentSPFeatureDefinitionCollector != null)
+      {
+        model.FeatureDefinitions.AddRange(SubsequentSPFeatureDefinitionCollector.Process(farm));
+      }
+
       //Collect server instances within the farm
       if (SubsequentSPServerCollector != null)
       {
@@ -77,7 +83,7 @@ namespace AnalyzePoint.SharePointServer.Collector
       //Collect services within the farm
       if (SubsequentSPServiceCollector != null)
       {
-        model.Services.AddRange(SubsequentSPServiceCollector.Process(farm));
+        model.Services.AddRange(SubsequentSPServiceCollector.WithComponentDefinitions(model.FeatureDefinitions).Process(farm));
       }
 
       //If we have collected services and servers, we may collect their instances
@@ -86,11 +92,7 @@ namespace AnalyzePoint.SharePointServer.Collector
         ;
       }
 
-      //Collect feature definitions of the farm
-      if (SubsequentSPFeatureDefinitionCollector != null)
-      {
-        model.FeatureDefinitions.AddRange(SubsequentSPFeatureDefinitionCollector.Process(farm));
-      }
+
 
       return new[] { model };
     }

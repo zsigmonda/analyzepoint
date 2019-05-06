@@ -9,9 +9,9 @@ using Microsoft.SharePoint;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPListCollector : IComponentCollector<ListDescriptor>
+  public class SPListCollector : ITargetedComponentCollector<SPListCollector, ListDescriptor>
   {
-    public IComponentCollector<ListDescriptor> ForComponent(object componentToProcess)
+    public SPListCollector ForComponent(object componentToProcess)
     {
       throw new NotImplementedException();
     }

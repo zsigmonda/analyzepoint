@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Collector
 {
-  public interface IDefinitionBoundComponentCollector<T, U> : IComponentCollector<T> where T : Descriptor where U : Descriptor 
+  public interface IDefinitionBoundComponentCollector<Self, T, TDefinition> : IComponentCollector<T>
+    where Self : IDefinitionBoundComponentCollector<Self, T, TDefinition>
+    where T : Descriptor
+    where TDefinition : Descriptor 
   {
-    IComponentCollector<T> WithComponentDefinitions(IEnumerable<U> componentDefinitions);
+    Self WithComponentDefinitions(IEnumerable<TDefinition> componentDefinitions);
   }
 }

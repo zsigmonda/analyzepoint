@@ -10,7 +10,8 @@ using AnalyzePoint.Core.Common;
 
 namespace AnalyzePoint.SharePointServer.Collector
 {
-  public class SPServiceCollector : IDefinitionBoundComponentCollector<ServiceDescriptor, FeatureDefinitionDescriptor>
+  public class SPServiceCollector : IDefinitionBoundComponentCollector<SPServiceCollector, ServiceDescriptor, FeatureDefinitionDescriptor>,
+    ITargetedComponentCollector<SPServiceCollector, ServiceDescriptor>
   {
     private SPFarm ComponentToProcess;
     private SPWebApplicationCollector SubsequentSPWebApplicationCollector;
@@ -22,7 +23,7 @@ namespace AnalyzePoint.SharePointServer.Collector
       ComponentToProcess = SPFarm.Local;
     }
 
-    public IComponentCollector<ServiceDescriptor> ForComponent(object componentToProcess)
+    public SPServiceCollector ForComponent(object componentToProcess)
     {
       ComponentToProcess = componentToProcess as SPFarm;
 
@@ -74,12 +75,12 @@ namespace AnalyzePoint.SharePointServer.Collector
 
           if (SubsequentSPWebApplicationCollector != null)
           {
-            ((WebServiceDescriptor)model).WebApplications.AddRange(SubsequentSPWebApplicationCollector.Process(service as SPWebService));
+            ((WebServiceDescriptor)model).WebApplications.AddRange(SubsequentSPWebApplicationCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(service as SPWebService));
           }
 
           if (SubsequentSPFeatureCollector != null)
           {
-            ((WebServiceDescriptor)model).Features.AddRange(SubsequentSPFeatureCollector.Process(service as SPWebService));
+            ((WebServiceDescriptor)model).Features.AddRange(SubsequentSPFeatureCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(service as SPWebService));
           }
         }
         else if (service.Id == centralAdminWebServiceId)
@@ -89,12 +90,12 @@ namespace AnalyzePoint.SharePointServer.Collector
 
           if (SubsequentSPWebApplicationCollector != null)
           {
-            ((WebServiceDescriptor)model).WebApplications.AddRange(SubsequentSPWebApplicationCollector.Process(service as SPWebService));
+            ((WebServiceDescriptor)model).WebApplications.AddRange(SubsequentSPWebApplicationCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(service as SPWebService));
           }
 
           if (SubsequentSPFeatureCollector != null)
           {
-            ((WebServiceDescriptor)model).Features.AddRange(SubsequentSPFeatureCollector.Process(service as SPWebService));
+            ((WebServiceDescriptor)model).Features.AddRange(SubsequentSPFeatureCollector.WithComponentDefinitions(this.ComponentDefinitions).Process(service as SPWebService));
           }
         }
         else if (service.Id == timerJobServiceId)
@@ -118,8 +119,10 @@ namespace AnalyzePoint.SharePointServer.Collector
       return resultSet;
     }
 
-    public IComponentCollector<ServiceDescriptor> WithComponentDefinitions(IEnumerable<FeatureDefinitionDescriptor> componentDefinitions)
+    public SPServiceCollector WithComponentDefinitions(IEnumerable<FeatureDefinitionDescriptor> componentDefinitions)
     {
+      ComponentDefinitions = componentDefinitions;
+
       return this;
     }
 

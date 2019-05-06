@@ -56,6 +56,7 @@
     <Compile Include="Collector\IComponentCollector.cs" />
     <Compile Include="Collector\IDefinitionBoundComponentCollector.cs" />
     <Compile Include="Collector\IRecursiveComponentCollector.cs" />
+    <Compile Include="Collector\ITargetedComponentCollector.cs" />
     <Compile Include="Common\EnumExtensions.cs" />
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Configuration\AnalyzePointConfiguration.cs" />
