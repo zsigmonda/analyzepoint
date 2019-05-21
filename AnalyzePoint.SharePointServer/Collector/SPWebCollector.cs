@@ -36,7 +36,9 @@ namespace AnalyzePoint.SharePointServer.Collector
         if (site == null)
           throw new ArgumentNullException(nameof(site));
 
-        return null;
+        List<SiteDescriptor> resultSet = new List<SiteDescriptor>();
+
+        return resultSet;
       }
       catch (Exception ex)
       {

@@ -20,12 +20,17 @@ namespace AnalyzePoint.TestHarness
     {
       Logger.Info("TestHarness started.");
 
+      /*
       AnalyzePoint.SharePointServer.Collector.CollectorFactory cf = new SharePointServer.Collector.CollectorFactory();
       AnalyzePoint.Core.Collector.ArtifactCollector ac = new Core.Collector.ArtifactCollector(cf);
       IComponentCollector<FarmDescriptor> collector = ac.CollectorFor<FarmDescriptor>();
       var v = collector.Process();
 
       var v2 = v.First().FeatureDefinitions.Where(f => f.ContainingSolution != null).ToList();
+      */
+
+      AnalyzePoint.Core.Unpacker.IPackageUnpacker up = new AnalyzePoint.Core.Unpacker.WspUnpacker();
+      up.ExtractAll(@"C:\Users\azsigmond\Desktop\Input\LP.HC.SPS.SafetyTerminal.wsp");
 
       Logger.Info("TestHarness finished executing.");
 

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace AnalyzePoint.Core.Model
 {
-  public interface IFeatureTarget
+  public interface IEventReceiverTarget
   {
-    System.Collections.ObjectModel.ObservableCollection<FeatureDescriptor> Features { get; }
+    System.Collections.ObjectModel.ObservableCollection<EventReceiverDescriptor> EventReceivers { get; }
   }
 }

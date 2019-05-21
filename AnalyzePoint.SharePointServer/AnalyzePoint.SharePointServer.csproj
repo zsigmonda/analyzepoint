@@ -51,6 +51,7 @@
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Collector\CollectorFactory.cs" />
+    <Compile Include="Collector\SPEventReceiverCollector.cs" />
     <Compile Include="Collector\SPFarmCollector.cs" />
     <Compile Include="Collector\SPFeatureCollector.cs" />
     <Compile Include="Collector\SPFeatureDefinitionCollector.cs" />

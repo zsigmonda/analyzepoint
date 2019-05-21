@@ -19,6 +19,7 @@ namespace AnalyzePoint.SharePointServer.Collector
     private IEnumerable<FeatureDefinitionDescriptor> FeatureDefinitions;
     private SPFeatureCollector SubsequentSPFeatureCollector;
     private SPWebCollector SubsequentSPWebCollector;
+    private SPEventReceiverCollector SubsequentSPEventReceiverCollector;
 
     public SPSiteCollector ForComponent(object componentToProcess)
     {
@@ -63,6 +64,13 @@ namespace AnalyzePoint.SharePointServer.Collector
           if (SubsequentSPWebCollector != null)
           {
             model.RootSite = SubsequentSPWebCollector.WithComponentDefinitions(FeatureDefinitions).WithoutRecursion().Process(siteCollection).FirstOrDefault();
+          }
+
+          if (SubsequentSPEventReceiverCollector != null)
+          {
+            //model.EventReceivers
+
+            
           }
 
           resultSet.Add(model);
