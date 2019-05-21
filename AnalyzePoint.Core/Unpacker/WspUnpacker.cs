@@ -7,7 +7,7 @@ namespace AnalyzePoint.Core.Unpacker
 {
   public class WspUnpacker : IPackageUnpacker
   {
-    public DirectoryInfo ExtractAll(string packageFullFileName)
+    public DirectoryInfo ExtractAll(string packageFullFileName, string outputFolderPath = null)
     {
       if (String.IsNullOrEmpty(packageFullFileName))
       {
@@ -19,24 +19,32 @@ namespace AnalyzePoint.Core.Unpacker
         throw new FileNotFoundException("WSP file not found.", packageFullFileName);
       }
 
-      string tempFolderName = Path.Combine(AnalyzePointConfiguration.Current.TemporaryFolder.Path, Path.GetRandomFileName());
-
-      int retryCount;
-      for(retryCount = 4; retryCount > 0 && Directory.Exists(tempFolderName); --retryCount)
+      string tempFolderName;
+      if (String.IsNullOrEmpty(outputFolderPath))
       {
         tempFolderName = Path.Combine(AnalyzePointConfiguration.Current.TemporaryFolder.Path, Path.GetRandomFileName());
-      }
 
-      if (retryCount == 0)
+        int retryCount;
+        for (retryCount = 4; retryCount > 0 && Directory.Exists(tempFolderName); --retryCount)
+        {
+          tempFolderName = Path.Combine(AnalyzePointConfiguration.Current.TemporaryFolder.Path, Path.GetRandomFileName());
+        }
+
+        if (retryCount == 0)
+        {
+          throw new Exception("Could not create temporary folder for WSP extraction.");
+        }
+      }
+      else
       {
-        throw new Exception("Could not create temporary folder for WSP extraction.");
+        tempFolderName = outputFolderPath;
       }
 
       DirectoryInfo returnValue = Directory.CreateDirectory(tempFolderName);
 
       CabInfo cabinetInfo = new CabInfo(packageFullFileName);
 
-      cabinetInfo.Unpack(tempFolderName);
+      cabinetInfo.Unpack(returnValue.FullName);
 
       return returnValue;
     }

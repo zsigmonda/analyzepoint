@@ -8,6 +8,6 @@ namespace AnalyzePoint.Core.Unpacker
 {
   public interface IPackageUnpacker
   {
-    System.IO.DirectoryInfo ExtractAll(string packageFullFileName);
+    System.IO.DirectoryInfo ExtractAll(string packageFullFileName, string outputFolderPath = null);
   }
 }
