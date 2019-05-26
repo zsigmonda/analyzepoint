@@ -5,8 +5,32 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AnalyzePoint.FrontEnd"
         mc:Ignorable="d"
-        Title="AnalyzePoint" Height="450" Width="800" WindowStartupLocation="CenterScreen" Icon="AppIcon.ico">
-    <Grid>
-        
+        Title="AnalyzePoint" Height="450" Width="800" WindowStartupLocation="CenterScreen" Icon="AppIcon.ico" MinWidth="500" MinHeight="300">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="50"/>
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="5" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Grid Grid.Column="0" Grid.Row="0">
+      <TreeView Margin="4,4,4,4" />
     </Grid>
+    <GridSplitter Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" Width="5"/>
+    <Grid Grid.Column="2" Grid.Row="0">
+      <TreeView Margin="4,4,4,4" />
+    </Grid>
+    <Grid Grid.ColumnSpan="3" Grid.Row="1" VerticalAlignment="Bottom">
+      <WrapPanel ScrollViewer.VerticalScrollBarVisibility="Disabled" FlowDirection="RightToLeft" Width="300" HorizontalAlignment="Right" Margin="0,0,5,0">
+        <Button HorizontalAlignment="Right" Width="75" Height="25" VerticalAlignment="Center" Content="Exit" Margin="5,10"/>
+        <Button HorizontalAlignment="Right" Width="75" Height="25" VerticalAlignment="Center" Content="About" Margin="5,10"/>
+      </WrapPanel>
+      <WrapPanel ScrollViewer.VerticalScrollBarVisibility="Disabled" FlowDirection="LeftToRight" Width="300" HorizontalAlignment="Left" Margin="0,0,5,0">
+        <Button HorizontalAlignment="Right" Width="75" Height="25" VerticalAlignment="Center" Content="Load Farm" Margin="5,10"/>
+      </WrapPanel>
+    </Grid>
+  </Grid>
 </Window>

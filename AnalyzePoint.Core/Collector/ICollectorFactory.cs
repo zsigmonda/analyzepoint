@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AnalyzePoint.Core.Factory
+namespace AnalyzePoint.Core.Collector
 {
   public interface ICollectorFactory
   {

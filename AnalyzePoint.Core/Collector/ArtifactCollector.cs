@@ -1,5 +1,4 @@
-﻿using AnalyzePoint.Core.Factory;
-using AnalyzePoint.Core.Model;
+﻿using AnalyzePoint.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

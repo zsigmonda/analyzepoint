@@ -135,7 +135,7 @@
     <Compile Include="Common\Enums.cs" />
     <Compile Include="Configuration\AnalyzePointConfiguration.cs" />
     <Compile Include="Configuration\FolderConfiguration.cs" />
-    <Compile Include="Factory\ICollectorFactory.cs" />
+    <Compile Include="Collector\ICollectorFactory.cs" />
     <Compile Include="Model\ContentTypeDescriptor.cs" />
     <Compile Include="Model\Descriptor.cs" />
     <Compile Include="Model\EventReceiverDescriptor.cs" />
@@ -144,6 +144,7 @@
     <Compile Include="Model\FeatureDescriptor.cs" />
     <Compile Include="Model\IEventReceiverTarget.cs" />
     <Compile Include="Model\IFeatureTarget.cs" />
+    <Compile Include="Model\IModelBuilder.cs" />
     <Compile Include="Model\IWrapper.cs" />
     <Compile Include="Model\ListDescriptor.cs" />
     <Compile Include="Model\SiteColumnDescriptor.cs" />
@@ -186,7 +187,9 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Parser\" />
+  </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.2\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />

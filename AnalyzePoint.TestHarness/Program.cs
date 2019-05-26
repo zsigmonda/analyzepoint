@@ -18,6 +18,12 @@ namespace AnalyzePoint.TestHarness
 
     static void Main(string[] args)
     {
+      log4net.Appender.MemoryAppender memoryAppender = new log4net.Appender.MemoryAppender();
+
+      ((log4net.Repository.Hierarchy.Logger)Logger.Logger).AddAppender(memoryAppender);
+
+      
+
       Logger.Info("TestHarness started.");
 
       /*
